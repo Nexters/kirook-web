@@ -14,6 +14,7 @@
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.2.0",
+    "tailwind-variants": "^0.1.20",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
