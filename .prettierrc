@@ -4,22 +4,13 @@
   "singleQuote": true,
   "jsxSingleQuote": true,
   "trailingComma": "all",
-  "printWidth": 120,
+  "printWidth": 140,
   "arrowParens": "always",
   "endOfLine": "auto",
   "bracketSameLine": false,
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss"
-  ],
-  "tailwindFunctions": ["clsx", "classnames", "cva", "cn", "twMerge"],
+  "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+  "tailwindFunctions": ["clsx", "classnames", "cva", "cn", "twMerge", "cv"],
   "pluginSearchDirs": false,
-  "importOrder": [
-    "^next",
-    "^react",
-    "^@[^/]+/(.*)$",
-    "<THIRD_PARTY_MODULES>",
-    "^~"
-  ],
+  "importOrder": ["^next", "^react", "^@[^/]+/(.*)$", "<THIRD_PARTY_MODULES>", "^~"],
   "importOrderSortSpecifiers": true
 }
