@@ -5,4 +5,4 @@ export { default as Check } from './check.svg';
 export { default as Link } from './link.svg';
 export { default as Memo } from './memo.svg';
 export { default as Pin } from './pin.svg';
-export { default as XCircle } from './x-circle-bg.svg';
+export { default as XCircle } from './x-circle.svg';
