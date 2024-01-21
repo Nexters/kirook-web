@@ -29,10 +29,13 @@ export function Tab({ children, index }: TabProps) {
         type='button'
         onClick={handleTabClick}
         disabled={isActive}
-        className={cn('flex h-full w-full cursor-pointer items-center justify-center py-[22px]', {
-          'after:absolute after:bottom-[-2px] after:block after:h-[2px] after:w-[120px] after:rounded after:bg-[#333D4B]':
-            isActive,
-        })}
+        className={cn(
+          'text-grayscale-500 flex h-full w-full cursor-pointer items-center justify-center py-[22px] font-bold',
+          {
+            'after:bg-grayscale-900 text-black after:absolute after:bottom-[-2px] after:block after:h-[2.5px] after:w-[120px] after:rounded-lg':
+              isActive,
+          },
+        )}
       >
         {children}
       </button>
