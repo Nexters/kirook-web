@@ -22,7 +22,7 @@ const NavButton = ({
 
   return (
     <Link href={path}>
-      <div className='flex flex-col items-center gap-1 px-8 pb-8 pt-3.5'>
+      <div className='flex flex-col items-center gap-1 pb-8 pt-3.5'>
         <Icon iconType={icon} className={cn(isActive ? 'fill-black' : 'fill-grayscale-500', className)} />
         <div className='text-grayscale-700 text-xs'>{label}</div>
       </div>
@@ -32,7 +32,7 @@ const NavButton = ({
 
 const Navigation = () => {
   return (
-    <div className='w-100 border-grayscale-100 fixed bottom-0 flex h-fit items-center justify-around border-t-4'>
+    <div className='border-grayscale-100 absolute bottom-0 flex h-fit w-full items-center justify-around border-t-4 bg-white'>
       <NavButton key='calendar' path='/calendar' label='캘린더' icon='Calendar' />
       <NavButton key='todo' path='/todo' label='투두' icon='Todo' className='px-0.5 pb-[3px] pt-1' />
       <NavButton key='memo' path='/memo' label='메모' icon='Memo' />
