@@ -33,10 +33,11 @@ export default function Auth() {
       redirect_uri: redirectUri,
     });
 
-    const { access_token } = res.data;
-    if (access_token) {
+    const { access_token, duplicated_template_id } = res.data;
+    if (access_token && duplicated_template_id) {
       alert('성공했습니다');
       localStorage.setItem('access_token', access_token);
+      localStorage.setItem('page_id', duplicated_template_id);
     }
     // TODO:
     /**
