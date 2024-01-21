@@ -7,3 +7,4 @@ export { default as Memo } from './memo.svg';
 export { default as Pin } from './pin.svg';
 export { default as XCircle } from './x-circle.svg';
 export { default as Todo } from './todo.svg';
+export { default as Add } from './add.svg';

@@ -9,6 +9,9 @@ const config: Config = {
       fontFamily: {
         pretendard: ['var(--font-pretendard)', ...fontFamily.sans],
       },
+      boxShadow: {
+        'input-focus': 'inset 0 -2px 0 #FD0000',
+      },
       colors: {
         grayscale: {
           50: '#F7F7FA',
