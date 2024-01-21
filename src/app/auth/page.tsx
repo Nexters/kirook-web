@@ -34,9 +34,9 @@ export default function Auth() {
     });
 
     const { access_token } = res.data;
-    if (access_token !== '') {
+    if (access_token) {
       alert('성공했습니다');
-      console.log(access_token);
+      localStorage.setItem('access_token', access_token);
     }
     // TODO:
     /**
