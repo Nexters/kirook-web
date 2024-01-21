@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import axios, { AxiosResponse } from 'axios';
 
 interface Resp {
   access_token: string;
@@ -13,23 +14,14 @@ interface Resp {
 export async function POST(request: Request) {
   const encoded = Buffer.from(`${process.env.OAUTH_CLIENT_ID}:${process.env.OAUTH_CLIENT_SECRET}`).toString('base64');
   const res = await request.json();
-  const reqBody = Response.json({ res });
   try {
-    // const resp = await axios.post<any, AxiosResponse<Resp>>('https://api.notion.com/v1/oauth/token', req.body, {
-    //   headers: {
-    //     Authorization: `Basic ${encoded}`,
-    //   },
-    // });
-    const resp = await fetch('https://api.notion.com/v1/oauth/token', {
-      method: 'POST',
+    const resp = await axios.post<any, AxiosResponse<Resp>>('https://api.notion.com/v1/oauth/token', res, {
       headers: {
         Authorization: `Basic ${encoded}`,
       },
-      body: JSON.stringify(reqBody),
     });
-    const data = await resp.json();
-    return NextResponse.json(data);
+    return NextResponse.json(resp.data);
   } catch (e) {
-    return NextResponse.json(null);
+    return NextResponse.json(e);
   }
 }
