@@ -16,7 +16,7 @@ export function Tab({ children, index }: TabProps) {
   const { activeTab, selectTab } = useTabs();
 
   const handleTabClick = () => {
-    if (!index) return;
+    if (index === undefined) return;
 
     selectTab(index);
   };
