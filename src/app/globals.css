@@ -27,13 +27,16 @@ html {
   height: 100vh;
   scrollbar-width: none;
   overflow-y: hidden;
+  background-color: #f5f5f5;
 }
+
 body {
   width: 100%;
   max-width: 475px;
   min-width: 320px;
   min-height: 100vh;
   scrollbar-width: none;
+  background-color: white;
 }
 
 @media (min-width: 475px) {
