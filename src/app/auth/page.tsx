@@ -27,7 +27,7 @@ export default function Auth() {
       return;
     }
 
-    const res = await axios.post<any, AxiosResponse<Resp>>('api/auth/token', {
+    const res = await axios.post<any, AxiosResponse<Resp>>('/api/auth', {
       grant_type: 'authorization_code',
       code: code,
       redirect_uri: redirectUri,

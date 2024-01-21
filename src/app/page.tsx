@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Navigation } from '@/shared/components';
 
 export default function Home() {
