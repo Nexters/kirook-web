@@ -11,7 +11,7 @@ interface Resp {
   workspace_name?: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
+export default async function POST(req: NextApiRequest, res: NextApiResponse<any>) {
   const encoded = Buffer.from(`${process.env.OAUTH_CLIENT_ID}:${process.env.OAUTH_CLIENT_SECRET}`).toString('base64');
 
   try {
