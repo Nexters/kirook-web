@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100vh;
+  scrollbar-width: none;
+}
+body {
+  width: 100%;
+  max-width: 375px;
+  min-width: 320px;
+  height: 100%;
+}
+
+@media (min-width: 375px) {
+  body {
+    width: 375px;
+    position: relative;
+    margin: auto;
+  }
+}
