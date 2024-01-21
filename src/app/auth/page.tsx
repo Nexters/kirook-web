@@ -1,7 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import React from 'react';
 import axios, { AxiosResponse } from 'axios';
 
 interface Resp {
@@ -17,8 +18,8 @@ interface Resp {
 const redirectUri = 'https://kkirook.vercel.app/auth';
 
 export default function Auth() {
-  const router = useRouter();
-  const { code } = router.query;
+  const params = useSearchParams();
+  const code = params.get('code');
 
   const handlePost = async () => {
     if (!code) {
@@ -48,8 +49,8 @@ export default function Auth() {
   }, [code]);
 
   return (
-    <main className='h-full w-full p-6'>
+    <section className='h-full w-full p-6'>
       <div>auth succeed</div>
-    </main>
+    </section>
   );
 }
