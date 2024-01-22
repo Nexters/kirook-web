@@ -1,10 +1,12 @@
-// 'use client';
+'use client';
+
 import { createContext } from 'react';
+import { type TabKey } from './types';
 
 interface TabsContext {
-  activeTab: number;
+  activeTab: TabKey;
 
-  selectTab(index: number): void;
+  selectTab(key: TabKey): void;
 }
 
 export const TabsContext = createContext<TabsContext | null>(null);

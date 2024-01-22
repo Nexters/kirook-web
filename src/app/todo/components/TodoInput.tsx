@@ -35,13 +35,17 @@ export function TodoInput() {
       </button>
       <div className='relative flex w-full items-center gap-2'>
         <p
-          className={cn('text-grayscale-600 absolute left-0 font-bold', {
+          className={cn('text-grayscale-600 absolute left-0 text-sm font-bold', {
             hidden: isInputActivated,
           })}
         >
           눌러서 추가하기
         </p>
-        <div className='flex w-full items-center gap-2'>
+        <div
+          className={cn('flex w-full items-center gap-2', {
+            'opacity-0': !isInputActivated,
+          })}
+        >
           <input
             ref={inputRef}
             type='text'
