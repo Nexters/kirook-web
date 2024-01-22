@@ -1,17 +1,70 @@
+'use client';
+
+import { FormEvent, useCallback, useRef, useState } from 'react';
 import { Icon } from '@/shared/components';
 
-export function TodoItem() {
+interface TodoItemProps {
+  id: number;
+  isFullfilled: boolean;
+  content: string;
+}
+
+export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const previousContent = useRef(content);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClickToggle = () => {
+    // TODO: API 호출
+    // toggle에 API 호출 너무 자주 일어날려나? API 기다려야하나?
+  };
+
+  const handleClickButton = useCallback(() => {
+    if (isEditMode) {
+      const inputValue = inputRef.current?.value;
+      if (inputValue?.length === 0) return;
+
+      // TODO: 수정 로직
+
+      setIsEditMode(false);
+      return;
+    }
+
+    // TODO: 삭제 로직
+  }, [isEditMode]);
+
+  const resetInput = useCallback(() => {
+    if (!isEditMode) return;
+    if (!inputRef.current) return;
+
+    inputRef.current.value = previousContent.current;
+    setIsEditMode(false);
+  }, [isEditMode]);
+
+  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isEditMode) return;
+  }, []);
+
   return (
-    <div className='flex w-full items-start gap-2 py-3'>
-      <button type='button' className='flex items-center justify-center'>
-        <Icon iconType='CheckFilled' />
+    <form className='flex w-full items-start gap-2 py-3' onSubmit={handleSubmit}>
+      <button type='button' className='flex items-center justify-center' onClick={handleClickToggle}>
+        <Icon iconType={isFullfilled ? 'CheckFilled' : 'Check'} />
       </button>
-      <p contentEditable className='grow text-sm font-normal'>
-        투두 본문 텍스트를 입력해요 투두 본문 텍스트를 입력해요 투두 본문 텍스트를 입력해요 투두 본문 텍스트를 입력해요
-      </p>
-      <button type='button' className='text-grayscale-700 w-fit shrink-0 font-bold'>
-        삭제
+      <input
+        ref={inputRef}
+        className='focus:bg-grayscale-50 grow bg-transparent px-[2px] py-[3.5px] text-sm font-normal outline-none transition-colors duration-300'
+        defaultValue={content}
+        onFocus={() => setIsEditMode(true)}
+        onBlur={resetInput}
+      />
+      <button
+        type='button'
+        className='text-grayscale-700 w-fit shrink-0 text-[10px] font-bold'
+        onClick={handleClickButton}
+      >
+        {isEditMode ? '확인' : '삭제'}
       </button>
-    </div>
+    </form>
   );
 }

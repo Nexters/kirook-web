@@ -1,5 +1,4 @@
-import { TodoInput } from './components/TodoInput';
-import { TodoItem } from './components/TodoItem';
+import { TodoListContainer } from './components/TodoListContainer';
 import { Navigation } from '@/shared/components';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 
@@ -13,17 +12,13 @@ export default function Todo() {
             <Tab tabKey='today'>오늘</Tab>
             <Tab tabKey='tomorrow'>내일</Tab>
           </TabList>
-          <TabPanel tabKey='today'>hi</TabPanel>
-          <TabPanel tabKey='tomorrow'>hw</TabPanel>
+          <TabPanel tabKey='today'>
+            <TodoListContainer />
+          </TabPanel>
+          <TabPanel tabKey='tomorrow'>
+            <TodoListContainer />
+          </TabPanel>
         </Tabs>
-        <div className='mt-[18px] flex w-full flex-col'>
-          <TodoInput />
-          <ul>
-            {[1, 2, 3].map((todo) => (
-              <li key={todo}>{<TodoItem />}</li>
-            ))}
-          </ul>
-        </div>
       </div>
       <Navigation />
     </>

@@ -53,7 +53,7 @@ export function TodoInput() {
             onChange={handleInputChange}
             className='caret-grayscale-600 focus:shadow-input-focus grow py-1 outline-none transition-all duration-300'
           />
-          <button type='submit' className='text-grayscale-700 w-fit font-bold'>
+          <button type='submit' className='text-grayscale-700 w-fit text-[10px] font-bold'>
             확인
           </button>
         </div>
