@@ -32,7 +32,10 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   };
   try {
     const resp = await axios.post<NotionTodoAllResponse>(url, req, {
-      headers: { Authorization: authToken },
+      headers: {
+        Authorization: authToken,
+        'Notion-Version': '2022-06-28',
+      },
     });
 
     const todos = resp.data.results.map<Todo>((todo) => {
