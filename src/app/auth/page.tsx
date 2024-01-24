@@ -51,7 +51,8 @@ export default function Auth() {
   };
 
   useEffect(() => {
-    handlePost();
+    console.log('effect', code);
+    // handlePost();
   }, [code]);
 
   return (
