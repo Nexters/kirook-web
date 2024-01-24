@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Todo } from '../../api/todo/[slug]/route';
 import { getTodoList } from '../apis/todo';
@@ -7,10 +5,11 @@ import { TodoItem } from './TodoItem';
 
 interface TodoProps {
   db: string;
+  accessToken: string;
 }
 
-export async function TodoList({ db }: TodoProps) {
-  const todos = await getTodoList(db);
+export async function TodoList({ db, accessToken }: TodoProps) {
+  const todos = await getTodoList(db, accessToken);
 
   const sorted = sortTodoListByIsFullfilled(todos);
 

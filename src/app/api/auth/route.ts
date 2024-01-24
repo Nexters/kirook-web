@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       {
         headers: {
           Authorization: `Basic ${encoded}`,
+          'Notion-Version': '2022-06-28',
         },
       },
     );
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
     const blockUrl = `https://api.notion.com/v1/blocks/${pageId}/children?page_size=10`;
     const blockResp = await axios.get<any, AxiosResponse<NotionBlockResponse>>(blockUrl, {
       headers: {
-        Authorization: `Basic ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         'Notion-Version': '2022-06-28',
       },
     });
