@@ -32,18 +32,20 @@ export async function POST(request: Request) {
         'Notion-Version': '2022-06-28',
       },
     });
-    const { results } = blockResp.data;
-    const databases = results
-      .filter((v: Block) => v.type === 'child_database')
-      .map((v: Block) => {
-        if (!v.child_database?.title) {
-          throw new Error('Database fetch error');
-        }
+    console.log(blockResp.data);
+    // const { results } = blockResp.data;
+    // const databases = results
+    //   .filter((v: Block) => v.type === 'child_database')
+    //   .map((v: Block) => {
+    //     if (!v.child_database?.title) {
+    //       throw new Error('Database fetch error');
+    //     }
 
-        return { id: v.id, title: v.child_database.title };
-      });
-    return NextResponse.json<AuthResponse>({ databases, accessToken });
+    //     return { id: v.id, title: v.child_database.title };
+    //   });
+    return NextResponse.json<AuthResponse>({ databases: [], accessToken });
   } catch (e) {
+    console.log(e);
     return NextResponse.json(e);
   }
 }
