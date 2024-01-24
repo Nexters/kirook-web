@@ -3,17 +3,8 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import React from 'react';
+import { AuthResponse } from '../api/auth/route';
 import axios, { AxiosResponse } from 'axios';
-
-interface Resp {
-  access_token: string;
-  bot_id: string;
-  duplicated_template_id?: string;
-  owner: any;
-  workspace_icon?: string;
-  workspace_id: string;
-  workspace_name?: string;
-}
 
 const redirectUri = 'https://kkirook.vercel.app/auth';
 
@@ -27,17 +18,31 @@ export default function Auth() {
       return;
     }
 
-    const res = await axios.post<any, AxiosResponse<Resp>>('/api/auth', {
+    const res = await axios.post<any, AxiosResponse<AuthResponse>>('/api/auth', {
       grant_type: 'authorization_code',
       code: code,
       redirect_uri: redirectUri,
     });
 
-    const { access_token, duplicated_template_id } = res.data;
-    if (access_token && duplicated_template_id) {
+    const { accessToken, databases } = res.data;
+    if (accessToken && databases.length) {
       alert('성공했습니다');
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('page_id', duplicated_template_id);
+      localStorage.setItem('access_token', accessToken);
+      databases.forEach((db) => {
+        switch (db.title) {
+          case 'todo':
+            localStorage.setItem('todo', db.id);
+            return;
+          case 'memo':
+            localStorage.setItem('memo', db.id);
+            return;
+          case 'link':
+            localStorage.setItem('link', db.id);
+            return;
+          default:
+            return;
+        }
+      });
     }
     // TODO:
     /**

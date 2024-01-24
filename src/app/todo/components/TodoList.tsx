@@ -1,9 +1,16 @@
+'use client';
+
+import React from 'react';
+import { Todo } from '../../api/todo/[slug]/route';
 import { getTodoList } from '../apis/todo';
-import { TodoListItem } from '../apis/types';
 import { TodoItem } from './TodoItem';
 
-export async function TodoList() {
-  const todos = await getTodoList();
+interface TodoProps {
+  db: string;
+}
+
+export async function TodoList({ db }: TodoProps) {
+  const todos = await getTodoList(db);
 
   const sorted = sortTodoListByIsFullfilled(todos);
 
@@ -11,13 +18,13 @@ export async function TodoList() {
     <ul>
       {sorted.map((todo) => (
         <li key={todo.id}>
-          <TodoItem id={todo.id} isFullfilled={todo.isFullfilled} content={todo.content} />
+          <TodoItem id={todo.id} isFullfilled={todo.status} content={todo.text} />
         </li>
       ))}
     </ul>
   );
 }
 
-function sortTodoListByIsFullfilled(todos: TodoListItem[]) {
-  return todos.sort((a, b) => Number(a.isFullfilled) - Number(b.isFullfilled));
+function sortTodoListByIsFullfilled(todos: Todo[]) {
+  return todos.sort((a, b) => Number(a.status) - Number(b.status));
 }

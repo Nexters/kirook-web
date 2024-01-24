@@ -1,10 +1,11 @@
 'use client';
 
 import { FormEvent, useCallback, useRef, useState } from 'react';
+import React from 'react';
 import { Icon } from '@/shared/components';
 
 interface TodoItemProps {
-  id: number;
+  id: string;
   isFullfilled: boolean;
   content: string;
 }
