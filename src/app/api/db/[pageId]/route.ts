@@ -1,8 +1,11 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { Block, NotionBlockResponse } from '../../auth/interfaces';
-import { AuthResponse } from '../../auth/route';
+import { Block, Database, NotionBlockResponse } from '../../auth/interfaces';
 import axios, { AxiosResponse } from 'axios';
+
+export interface DatabaseResponse {
+  databases: Database[];
+}
 
 export async function GET(request: Request, { params }: { params: { pageId: string } }) {
   const accessToken = headers().get('Authorization') || '';
@@ -27,5 +30,5 @@ export async function GET(request: Request, { params }: { params: { pageId: stri
       return { id: v.id, title: v.child_database?.title || '' };
     });
   console.log(databases);
-  return NextResponse.json<AuthResponse>({ databases, accessToken });
+  return NextResponse.json<DatabaseResponse>({ databases });
 }

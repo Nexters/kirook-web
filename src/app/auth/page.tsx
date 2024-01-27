@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import React from 'react';
 import { Database } from '../api/auth/interfaces';
 import { AuthResponse } from '../api/auth/route';
+import { DatabaseResponse } from '../api/db/[pageId]/route';
 import axios, { AxiosResponse } from 'axios';
 
 const redirectUri = 'https://kirook.vercel.app/auth';
@@ -31,13 +32,14 @@ export default function Auth() {
       localStorage.setItem('access_token', accessToken);
       localStorage.setItem('page_id', pageId);
 
-      const res = await axios.get(`/api/db/${pageId}`, {
+      const res = await axios.get<DatabaseResponse>(`/api/db/${pageId}`, {
         headers: {
           Authorization: accessToken,
         },
       });
 
-      console.log(res.data);
+      const { databases } = res.data;
+      setDatabase(databases);
     }
     // TODO:
     /**
