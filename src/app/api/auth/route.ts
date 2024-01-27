@@ -24,8 +24,6 @@ export async function POST(request: Request) {
     );
     const { access_token: accessToken, duplicated_template_id: pageId } = authResp.data;
 
-    // const accessToken = 'secret_TzpCuayx4yJfdKOHMXRyKFktHOPS7RfZ5ibMC1SSwls';
-    // const pageId = 'c6c51045-9bd1-44d3-bb38-1450f2b33de1';
     console.log(accessToken, pageId);
 
     return NextResponse.json({ accessToken, pageId });
