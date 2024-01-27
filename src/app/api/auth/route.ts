@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Block, Database, NotionAuthResponse, NotionBlockResponse } from './interfaces';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export interface AuthResponse {
   databases: Database[];
@@ -24,28 +24,14 @@ export async function POST(request: Request) {
     );
     const { access_token: accessToken, duplicated_template_id: pageId } = authResp.data;
 
-    // Get databases
-    const blockUrl = `https://api.notion.com/v1/blocks/${pageId}/children?page_size=10`;
-    const blockResp = await axios.get<any, AxiosResponse<NotionBlockResponse>>(blockUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Notion-Version': '2022-06-28',
-      },
-    });
-    console.log(blockResp.data);
-    // const { results } = blockResp.data;
-    // const databases = results
-    //   .filter((v: Block) => v.type === 'child_database')
-    //   .map((v: Block) => {
-    //     if (!v.child_database?.title) {
-    //       throw new Error('Database fetch error');
-    //     }
+    // const accessToken = 'secret_TzpCuayx4yJfdKOHMXRyKFktHOPS7RfZ5ibMC1SSwls';
+    // const pageId = 'c6c51045-9bd1-44d3-bb38-1450f2b33de1';
+    console.log(accessToken, pageId);
 
-    //     return { id: v.id, title: v.child_database.title };
-    //   });
-    return NextResponse.json<AuthResponse>({ databases: [], accessToken });
+    return NextResponse.json({ accessToken, pageId });
+
+    // TODO: auth와 block api 분리 후 각각 호출
   } catch (e) {
-    console.log(e);
     return NextResponse.json(e);
   }
 }

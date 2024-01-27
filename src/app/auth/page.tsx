@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import React from 'react';
+import { Database } from '../api/auth/interfaces';
 import { AuthResponse } from '../api/auth/route';
 import axios, { AxiosResponse } from 'axios';
 
@@ -18,31 +19,25 @@ export default function Auth() {
       return;
     }
 
-    const res = await axios.post<any, AxiosResponse<AuthResponse>>('/api/auth', {
+    const res = await axios.post<any, AxiosResponse<any>>('/api/auth', {
       grant_type: 'authorization_code',
       code: code,
       redirect_uri: redirectUri,
     });
 
-    const { accessToken, databases } = res.data;
-    if (accessToken && databases.length) {
+    const { accessToken, pageId } = res.data;
+    if (accessToken) {
       alert('성공했습니다');
       localStorage.setItem('access_token', accessToken);
-      databases.forEach((db) => {
-        switch (db.title) {
-          case 'todo':
-            localStorage.setItem('todo', db.id);
-            return;
-          case 'memo':
-            localStorage.setItem('memo', db.id);
-            return;
-          case 'link':
-            localStorage.setItem('link', db.id);
-            return;
-          default:
-            return;
-        }
+      localStorage.setItem('page_id', pageId);
+
+      const res = await axios.get(`/api/db/${pageId}`, {
+        headers: {
+          Authorization: accessToken,
+        },
       });
+
+      console.log(res.data);
     }
     // TODO:
     /**
@@ -50,14 +45,33 @@ export default function Auth() {
      */
   };
 
-  useEffect(() => {
-    console.log('effect', code);
-    // handlePost();
-  }, [code]);
+  const setDatabase = (databases: Database[]) => {
+    databases.forEach((db) => {
+      switch (db.title) {
+        case 'todo':
+          localStorage.setItem('todo', db.id);
+          return;
+        case 'memo':
+          localStorage.setItem('memo', db.id);
+          return;
+        case 'link':
+          localStorage.setItem('link', db.id);
+          return;
+        default:
+          return;
+      }
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log('effect', code);
+  //   handlePost();
+  // }, [code]);
 
   return (
     <section className='h-full w-full p-6'>
       <div>auth succeed</div>
+      <button onClick={handlePost}>click</button>
     </section>
   );
 }
