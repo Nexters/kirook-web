@@ -7,7 +7,7 @@ import { Database } from '../api/auth/interfaces';
 import { AuthResponse } from '../api/auth/route';
 import axios, { AxiosResponse } from 'axios';
 
-const redirectUri = 'https://kkirook.vercel.app/auth';
+const redirectUri = 'https://kirook.vercel.app/auth';
 
 export default function Auth() {
   const params = useSearchParams();
