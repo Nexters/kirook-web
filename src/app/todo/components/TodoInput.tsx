@@ -15,6 +15,7 @@ export function TodoInput() {
   };
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
     // TODO: todo 추가하는 API 연동
     const accessToken = localStorage.getItem('accessToken') || '';
     const dbId = localStorage.getItem('todo') || '';
@@ -41,7 +42,7 @@ export function TodoInput() {
       </button>
       <div className='relative flex w-full items-center gap-2'>
         <p
-          className={cn('text-grayscale-600 absolute left-0 text-sm font-bold', {
+          className={cn('text-body1 text-grayscale-600 absolute left-0', {
             hidden: isInputActivated,
           })}
         >
@@ -57,9 +58,9 @@ export function TodoInput() {
             type='text'
             value={input}
             onChange={handleInputChange}
-            className='caret-grayscale-600 focus:shadow-input-focus grow py-1 outline-none transition-all duration-300'
+            className='text-body2 caret-grayscale-600 focus:shadow-input-focus grow py-[2.5px] outline-none transition-all duration-300'
           />
-          <button type='submit' className='text-grayscale-700 w-fit text-[10px] font-bold'>
+          <button type='submit' className='text-button text-grayscale-700 w-fit'>
             확인
           </button>
         </div>
