@@ -28,7 +28,6 @@ export default function Auth() {
 
     const { accessToken, pageId } = res.data;
     if (accessToken) {
-      alert('성공했습니다');
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('pageId', pageId);
 
@@ -40,6 +39,7 @@ export default function Auth() {
 
       const { databases } = res.data;
       setDatabase(databases);
+      alert('성공했습니다');
     }
     // TODO:
     /**
