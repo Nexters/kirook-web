@@ -1,10 +1,9 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Database } from '../api/auth/interfaces';
-import { AuthResponse } from '../api/auth/route';
 import { DatabaseResponse } from '../api/db/[pageId]/route';
 import axios, { AxiosResponse } from 'axios';
 
@@ -13,6 +12,7 @@ const redirectUri = 'https://kirook.vercel.app/auth';
 export default function Auth() {
   const params = useSearchParams();
   const code = params.get('code');
+  const router = useRouter();
 
   const handlePost = async () => {
     if (!code) {
@@ -39,7 +39,8 @@ export default function Auth() {
 
       const { databases } = res.data;
       setDatabase(databases);
-      alert('성공했습니다');
+
+      router.push('/todo');
     }
     // TODO:
     /**
