@@ -19,7 +19,7 @@ export function TodoInput() {
     // TODO: todo 추가하는 API 연동
     const accessToken = localStorage.getItem('accessToken') || '';
     const dbId = localStorage.getItem('todo') || '';
-    const res = await createTodo(dbId, accessToken, input);
+    const res = await createTodo(accessToken, dbId, input);
 
     alert(res.text); // TODO 생성 성공시 액션..
   };

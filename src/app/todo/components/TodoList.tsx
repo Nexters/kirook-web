@@ -9,7 +9,7 @@ interface TodoProps {
 }
 
 export async function TodoList({ db, accessToken }: TodoProps) {
-  const todos = await getTodoList(db, accessToken);
+  const todos = await getTodoList(accessToken, db);
 
   const sorted = sortTodoListByIsFullfilled(todos);
 

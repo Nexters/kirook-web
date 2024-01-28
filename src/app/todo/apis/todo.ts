@@ -1,11 +1,11 @@
 import { Todo, TodoResponse } from '../../api/todos/[slug]/route';
 import { mockTodoResponse } from './mock_todo';
-import type { TodoListItem } from './types';
+import type { TodoListItem, UpdateTodo } from './types';
 import axios from 'axios';
 
 // TODO: 오늘 내일 구분 필요
-export async function getTodoList(dbId: string, accessToken: string): Promise<Todo[]> {
-  if (!dbId || !accessToken) {
+export async function getTodoList(accessToken: string, todolistId): Promise<Todo[]> {
+  if (!todolistId || !accessToken) {
     return [];
   }
 
@@ -13,7 +13,7 @@ export async function getTodoList(dbId: string, accessToken: string): Promise<To
     const { todos } = mockTodoResponse;
     return todos;
   }
-  const res = await axios.get<TodoResponse>(`/api/todos/${dbId}`, {
+  const res = await axios.get<TodoResponse>(`/api/todos/${todolistId}`, {
     headers: {
       Authorization: accessToken,
     },
@@ -23,14 +23,14 @@ export async function getTodoList(dbId: string, accessToken: string): Promise<To
   return todos;
 }
 
-export async function createTodo(dbId: string, accessToken: string, text: string): Promise<Todo> {
+export async function createTodo(accessToken: string, todolistId: string, text: string): Promise<Todo> {
   const created_at = new Date();
-  if (!dbId || !accessToken) {
+  if (!todolistId || !accessToken) {
     return {} as Todo;
   }
 
   const res = await axios.post<Todo>(
-    `/api/todos/${dbId}`,
+    `/api/todos/${todolistId}`,
     {
       created_at,
       status: false,
@@ -42,5 +42,19 @@ export async function createTodo(dbId: string, accessToken: string, text: string
       },
     },
   );
+  return res.data;
+}
+export async function updateTodo(accessToken: string, todo: UpdateTodo): Promise<Todo> {
+  if (!todo || !accessToken) {
+    return {} as Todo;
+  }
+
+  const { id, ...rest } = todo;
+
+  const res = await axios.post<Todo>(`/api/todos/${id}`, rest, {
+    headers: {
+      Authorization: accessToken,
+    },
+  });
   return res.data;
 }
