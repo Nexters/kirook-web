@@ -21,7 +21,7 @@ export function TodoInput() {
     const dbId = localStorage.getItem('todo') || '';
     const res = await createTodo(dbId, accessToken, input);
 
-    alert(res);
+    alert(res.text); // TODO 생성 성공시 액션..
   };
 
   const handleInputToggleButtonClick = () => {
