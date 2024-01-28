@@ -4,7 +4,7 @@ import type { TodoListItem, UpdateTodo } from './types';
 import axios from 'axios';
 
 // TODO: 오늘 내일 구분 필요
-export async function getTodoList(accessToken: string, todolistId): Promise<Todo[]> {
+export async function getTodoList(accessToken: string, todolistId: string): Promise<Todo[]> {
   if (!todolistId || !accessToken) {
     return [];
   }
@@ -51,7 +51,7 @@ export async function updateTodo(accessToken: string, todo: UpdateTodo): Promise
 
   const { id, ...rest } = todo;
 
-  const res = await axios.post<Todo>(`/api/todos/${id}`, rest, {
+  const res = await axios.post<Todo>(`/api/todos/todo/${id}`, rest, {
     headers: {
       Authorization: accessToken,
     },
