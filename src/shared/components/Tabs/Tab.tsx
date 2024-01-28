@@ -25,9 +25,9 @@ export function Tab({ children, tabKey }: TabProps) {
       onClick={() => selectTab(tabKey)}
       disabled={isActive}
       className={cn(
-        'text-grayscale-500 relative flex h-full w-full cursor-pointer items-center justify-center py-[22px] font-bold after:absolute after:bottom-[-2px] after:block after:h-[2.5px] after:w-[120px] after:rounded-lg after:bg-transparent',
+        'relative flex w-full cursor-pointer items-center justify-center py-[22px] text-grayscale-500 after:absolute after:bottom-[-2px] after:block after:h-[2.5px] after:w-[120px] after:rounded-lg after:bg-transparent',
         {
-          'after:bg-grayscale-900 text-black transition-colors duration-500 after:transition-colors after:duration-500':
+          'text-black transition-colors duration-500 after:bg-grayscale-900 after:transition-colors after:duration-500':
             isActive,
         },
       )}

@@ -9,6 +9,57 @@ const config: Config = {
       fontFamily: {
         pretendard: ['var(--font-pretendard)', ...fontFamily.sans],
       },
+      fontSize: {
+        // TODO: line height 배율 확정되면 추가
+        header1: [
+          '1.25rem',
+          {
+            fontWeight: '700',
+          },
+        ],
+        title1: [
+          '1.125rem',
+          {
+            fontWeight: '600',
+          },
+        ],
+        title2: [
+          '1rem',
+          {
+            fontWeight: '600',
+          },
+        ],
+        title3: [
+          '1rem',
+          {
+            fontWeight: '600',
+          },
+        ],
+        body1: [
+          '0.875rem',
+          {
+            fontWeight: '600',
+          },
+        ],
+        body2: [
+          '0.875rem',
+          {
+            fontWeight: '400',
+          },
+        ],
+        text: [
+          '0.75rem',
+          {
+            fontWeight: '400',
+          },
+        ],
+        button: [
+          '0.625rem',
+          {
+            fontWeight: '500',
+          },
+        ],
+      },
       boxShadow: {
         'input-focus': 'inset 0 -2px 0 #FD0000',
       },
