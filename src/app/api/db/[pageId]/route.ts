@@ -24,11 +24,9 @@ export async function GET(request: Request, { params }: { params: { pageId: stri
     .map((v: Block) => {
       if (!v.child_database?.title) {
         // throw new Error('Database fetch error');
-        console.log('no title');
       }
 
       return { id: v.id, title: v.child_database?.title || '' };
     });
-  console.log(databases);
   return NextResponse.json<DatabaseResponse>({ databases });
 }

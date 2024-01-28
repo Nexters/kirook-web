@@ -1,5 +1,5 @@
 import React from 'react';
-import { Todo } from '../../api/todo/[slug]/route';
+import { Todo } from '../../api/todos/[slug]/route';
 import { getTodoList } from '../apis/todo';
 import { TodoItem } from './TodoItem';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent, useRef, useState } from 'react';
+import { createTodo } from '../apis/todo';
 import { Icon } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
 
@@ -13,8 +14,13 @@ export function TodoInput() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     // TODO: todo 추가하는 API 연동
+    const accessToken = localStorage.getItem('accessToken') || '';
+    const dbId = localStorage.getItem('todo') || '';
+    const res = await createTodo(dbId, accessToken, input);
+
+    alert(res);
   };
 
   const handleInputToggleButtonClick = () => {

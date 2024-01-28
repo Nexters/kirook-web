@@ -29,8 +29,8 @@ export default function Auth() {
     const { accessToken, pageId } = res.data;
     if (accessToken) {
       alert('성공했습니다');
-      localStorage.setItem('access_token', accessToken);
-      localStorage.setItem('page_id', pageId);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('pageId', pageId);
 
       const res = await axios.get<DatabaseResponse>(`/api/db/${pageId}`, {
         headers: {
@@ -64,11 +64,6 @@ export default function Auth() {
       }
     });
   };
-
-  // useEffect(() => {
-  //   console.log('effect', code);
-  //   handlePost();
-  // }, [code]);
 
   return (
     <section className='h-full w-full p-6'>

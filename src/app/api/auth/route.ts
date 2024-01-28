@@ -24,8 +24,6 @@ export async function POST(request: Request) {
     );
     const { access_token: accessToken, duplicated_template_id: pageId } = authResp.data;
 
-    console.log(accessToken, pageId);
-
     return NextResponse.json({ accessToken, pageId });
 
     // TODO: auth와 block api 분리 후 각각 호출
