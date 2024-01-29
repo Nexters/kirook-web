@@ -1,4 +1,5 @@
 type FetchUrl = string | URL | globalThis.Request;
+type AnyBody = Record<string, any>;
 
 async function request<Response>(url: FetchUrl, init: RequestInit = {}): Promise<Response> {
   const baseUrl = '';
@@ -26,7 +27,7 @@ const get = <Response>(url: FetchUrl, options?: RequestInit) => {
   });
 };
 
-const post = <Response, Body>(url: FetchUrl, body: Body, options?: RequestInit) => {
+const post = <Response, Body extends AnyBody = AnyBody>(url: FetchUrl, body: Body, options?: RequestInit) => {
   return request<Response>(url, {
     ...options,
     method: 'POST',
@@ -34,7 +35,7 @@ const post = <Response, Body>(url: FetchUrl, body: Body, options?: RequestInit) 
   });
 };
 
-const put = <Response, Body>(url: FetchUrl, body: Body, options?: RequestInit) => {
+const put = <Response, Body extends AnyBody = AnyBody>(url: FetchUrl, body: Body, options?: RequestInit) => {
   return request<Response>(url, {
     ...options,
     method: 'PUT',
@@ -42,7 +43,7 @@ const put = <Response, Body>(url: FetchUrl, body: Body, options?: RequestInit) =
   });
 };
 
-const patch = <Response, Body>(url: FetchUrl, body: Body, options?: RequestInit) => {
+const patch = <Response, Body extends AnyBody = AnyBody>(url: FetchUrl, body: Body, options?: RequestInit) => {
   return request<Response>(url, {
     ...options,
     method: 'PATCH',
