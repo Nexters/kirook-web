@@ -69,7 +69,9 @@ export default function Auth() {
   return (
     <section className='h-full w-full p-6'>
       <div>auth succeed</div>
-      <button onClick={handlePost}>click</button>
+      <button className='text-green-500' onClick={handlePost}>
+        연동완료
+      </button>
     </section>
   );
 }
