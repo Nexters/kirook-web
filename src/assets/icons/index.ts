@@ -8,3 +8,6 @@ export { default as Pin } from './pin.svg';
 export { default as XCircle } from './x-circle.svg';
 export { default as Todo } from './todo.svg';
 export { default as Add } from './add.svg';
+export { default as Plus } from './plus.svg';
+export { default as XMono } from './x-mono.svg';
+export { default as ChevronLeft } from './chevron-left.svg';
