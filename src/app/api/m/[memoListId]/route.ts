@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Todo, TodoResponse } from '../../todos/[slug]/route';
-import { NotionTodo, NotionTodoAllResponse } from '../../todos/interfaces';
+import { NotionTodoAllResponse } from '../../todos/interfaces';
 import { Memo, MemoResponse, NotionMemo, NotionMemoResponse } from './interface';
 import axios, { AxiosError } from 'axios';
 
@@ -37,6 +37,7 @@ export async function GET(request: NextRequest, { params }: { params: { memoList
   }
 }
 
+// Create Todo
 export async function POST(request: Request, { params }: { params: { memoListId: string } }) {
   const slug = params.memoListId;
   const body = await request.json();
@@ -49,28 +50,9 @@ export async function POST(request: Request, { params }: { params: { memoListId:
       database_id: slug,
     },
     properties: {
-      tags: body.tags,
-      title: {
-        type: 'title',
-        rich_text: [
-          {
-            type: 'text',
-            text: {
-              content: body.text,
-              link: null,
-            },
-            annotations: {
-              bold: false,
-              italic: false,
-              strikethrough: false,
-              underline: false,
-              code: false,
-              color: 'default',
-            },
-            plain_text: body.title,
-            href: null,
-          },
-        ],
+      tags: {
+        type: 'multi_select',
+        multi_select: body.tags,
       },
       text: {
         type: 'rich_text',
@@ -94,6 +76,28 @@ export async function POST(request: Request, { params }: { params: { memoListId:
           },
         ],
       },
+      title: {
+        type: 'title',
+        title: [
+          {
+            type: 'text',
+            text: {
+              content: body.title,
+              link: null,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: body.title,
+            href: null,
+          },
+        ],
+      },
     },
   };
   try {
@@ -105,13 +109,13 @@ export async function POST(request: Request, { params }: { params: { memoListId:
     });
 
     if (res.status === 200) {
-      const { tags, title, text } = res.data.properties;
-      const { created_time } = res.data.properties['Created time'];
-      //   const { created_time } = memo.properties['Created time'];
+      const { properties } = res.data;
+      const { tags, text, title } = properties;
+      const { created_time } = properties['Created time'];
       return NextResponse.json<Memo>({
         tags: tags.multi_select,
-        title: title.title[0].plain_text,
         text: text.rich_text[0].plain_text,
+        title: title.title[0].plain_text,
         createdAt: created_time,
       });
     } else {
@@ -119,7 +123,6 @@ export async function POST(request: Request, { params }: { params: { memoListId:
     }
   } catch (e) {
     const error = e as AxiosError;
-    console.log(error.message, error.toJSON());
     return NextResponse.json({ message: 'error', error: error.message });
   }
 }

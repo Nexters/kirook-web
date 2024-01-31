@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createMemo } from '../apis/memo';
 import useAutosizeTextArea from '../hooks/useAutosizeTextArea';
 import { MemoLogo } from '@/assets/logo';
 import { Icon, Navigation } from '@/shared/components';
@@ -12,6 +13,8 @@ export default function MemoWritePage() {
   const [tagValue, setTagValue] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [token, setToken] = useState('');
+  const [memoListId, setId] = useState('');
 
   useAutosizeTextArea(textAreaRef.current, value);
 
@@ -33,10 +36,25 @@ export default function MemoWritePage() {
     setTags(filteredTags);
   };
 
-  const handlePost = () => {
-    console.log(value);
-    console.log(tags);
+  const handlePost = async () => {
+    const res = await createMemo(token, memoListId, {
+      tags: tags.map((t) => ({ color: 'gray', name: t })),
+      title: '제목입니다',
+      text: value,
+    });
+
+    console.log(res);
   };
+
+  useEffect(() => {
+    const t = localStorage.getItem('accessToken');
+    const m = localStorage.getItem('memo');
+
+    if (t && m) {
+      setToken(t);
+      setId(m);
+    }
+  }, []);
 
   return (
     <>

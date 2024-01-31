@@ -58,7 +58,7 @@ interface MultiSelectProperty extends Property {
 
 interface MultiSelectOption {
   color: string;
-  id: string;
+  id?: string;
   name: string;
   // Replace this with the actual structure of the object inside the multi_select array
 }
