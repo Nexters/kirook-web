@@ -74,8 +74,8 @@ export default function Memo() {
 
   const [selectedTag, setSelectedTag] = useState('ALL');
   const [selectedMemoes, setSelectedMemoes] = useState(filterMemoes(selectedTag, MEMO_MOCK_DATA));
-  const fetchMemo = async (accessToken: string, memolistId: string) => {
-    const res = await axios.get<MemoResponse>(`/api/memos/${memolistId}`, {
+  const fetchMemo = async (accessToken: string, memoListId: string) => {
+    const res = await axios.get<MemoResponse>(`/api/memos/${memoListId}`, {
       headers: {
         Authorization: accessToken,
       },
