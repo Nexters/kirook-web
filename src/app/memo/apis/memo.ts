@@ -1,4 +1,4 @@
-import { Memo } from '@/app/api/m/[memoListId]/interface';
+import { Memo } from '@/app/api/memos/[memoListId]/interface';
 import axios from 'axios';
 
 export const createMemo = async (accessToken: string, memoListId: string, memo: Omit<Memo, 'createdAt'>) => {
