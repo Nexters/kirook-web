@@ -1,6 +1,6 @@
 export interface NotionMemoResponse {
   object: string;
-  results: Page[];
+  results: NotionMemo[];
   next_cursor: null;
   has_more: boolean;
   type: string;
@@ -19,7 +19,7 @@ export interface Memo {
   createdAt: string;
 }
 
-export interface Page {
+export interface NotionMemo {
   object: string;
   id: string;
   created_time: string;

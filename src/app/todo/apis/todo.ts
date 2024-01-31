@@ -9,10 +9,6 @@ export async function getTodoList(accessToken: string, todolistId: string): Prom
     return [];
   }
 
-  if (process.env.NEXT_PUBLIC_ENV === 'dev') {
-    const { todos } = mockTodoResponse;
-    return todos;
-  }
   const res = await axios.get<TodoResponse>(`/api/todos/${todolistId}`, {
     headers: {
       Authorization: accessToken,
