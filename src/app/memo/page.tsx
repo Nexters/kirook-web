@@ -2,95 +2,68 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { MemoResponse } from '../api/memos/[memoListId]/interface';
+import { MemoResponse, Memo, MultiSelectOption } from '../api/memos/[memoListId]/interface';
 import MemoPreview from './components/MemoPreview';
 import { MemoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
 import axios from 'axios';
 
-interface memoProps {
-  title: string;
-  updatedAt: Date;
-  // TODO: tag 정보 어떻게 넘어오는지 확인 이후 변경 예정
-  tags: string[];
-}
-
-const MEMO_MOCK_DATA = [
+const TAGS_MOCK_DATA = [
   {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date(),
-    tags: ['태그에요태그열자에요', '태그에요태그열자에요', '태그에요태그열자에요', '태그에요태그열자에요'],
+    id: 'f196780c-0091-429d-8785-b88bbb2af870',
+    name: '태그에요태그열자에요',
+    color: 'gray',
   },
   {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['태그에요태그열자에요', '태그에요태그열자에요', '태그에요태그열자에요', '태그에요태그열자에요'],
+    id: 'f196780c-0091-429d-8785',
+    name: '태그3',
+    color: 'gray',
   },
   {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['태그3'],
-  },
-  {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['태그3'],
-  },
-  {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['태그3'],
-  },
-  {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['TAG태그8'],
-  },
-  {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['TAG태그8'],
-  },
-  {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['TAG태그8'],
-  },
-  {
-    title: '제목첫줄만 제목제목 넘어가면 말줄임 처리해요 제목 첫줄만 ',
-    updatedAt: new Date('2024.05.31'),
-    tags: ['TAG태그8'],
+    id: 'f196780c',
+    name: '여행',
+    color: 'gray',
   },
 ];
 
-const TAGS_MOCK_DATA = ['태그에요태그열자에요', '태그3', 'TAG태그8'];
-
 export default function Memo() {
-  const filterMemoes = (tag: string, memoes: memoProps[]) => {
-    if (tag === 'ALL') return memoes;
-    return memoes.filter((memo: memoProps) => memo.tags.includes(tag));
+  const filterMemoes = (tag: MultiSelectOption, memoes: Memo[]) => {
+    if (tag.name === 'ALL') return memoes;
+    return memoes.filter((memo: Memo) => memo.tags.includes(tag));
   };
 
-  const [selectedTag, setSelectedTag] = useState('ALL');
-  const [selectedMemoes, setSelectedMemoes] = useState(filterMemoes(selectedTag, MEMO_MOCK_DATA));
+  const [memos, setMemos]=useState<Memo[]>([])
+  const [selectedTag, setSelectedTag] = useState<MultiSelectOption>({ name: 'ALL', id: 'all', color: 'gray'});
+  const [selectedMemoes, setSelectedMemoes] = useState<Memo[]>(filterMemoes(selectedTag, memos));
+  
   const fetchMemo = async (accessToken: string, memoListId: string) => {
     const res = await axios.get<MemoResponse>(`/api/memos/${memoListId}`, {
       headers: {
         Authorization: accessToken,
       },
     });
+    console.log(res.data.memos)
 
-    console.log(res.data.memos);
+    return res.data.memos
   };
+
+  const getMemos = async (accessToken: string, memoListId: string) => {
+    const memos = await fetchMemo(accessToken, memoListId);
+    setMemos(memos)
+    setSelectedMemoes(filterMemoes(selectedTag, memos))
+  }
 
   useEffect(() => {
     const memoListId = localStorage.getItem('memo');
     const accessToken = localStorage.getItem('accessToken');
     if (memoListId !== null && accessToken !== null) {
-      fetchMemo(accessToken, memoListId);
+      getMemos(accessToken, memoListId);
     }
   }, []);
+
+  console.log(selectedMemoes)
+
   return (
     <>
       <div className='bg-grayscale-50 flex h-screen w-full flex-col'>
@@ -102,19 +75,19 @@ export default function Memo() {
 
           {/* MEMO 태그 필터 */}
           <div className='no-scrollbar ml-4 flex flex-nowrap gap-2 overflow-x-scroll py-2'>
-            {['ALL', ...TAGS_MOCK_DATA].map((tag, idx) => (
+            {[{ name: 'ALL', id: 'all', color: 'gray'}, ...TAGS_MOCK_DATA].map((tag, idx) => (
               <div
                 key={idx}
                 className={cn(
                   'shrink-0 grow-0 basis-auto cursor-pointer rounded-2xl px-2 py-1 text-sm',
-                  selectedTag === tag ? 'bg-black text-white' : 'bg-grayscale-300 text-black',
+                  selectedTag.name === tag.name ? 'bg-black text-white' : 'bg-grayscale-300 text-black',
                 )}
                 onClick={() => {
                   setSelectedTag(tag);
-                  setSelectedMemoes(filterMemoes(tag, MEMO_MOCK_DATA));
+                  setSelectedMemoes(filterMemoes(tag, memos));
                 }}
               >
-                {tag !== 'ALL' ? `#${tag}` : tag}
+                {tag.name !== 'ALL' ? `#${tag.name}` : tag.name}
               </div>
             ))}
           </div>
@@ -131,12 +104,14 @@ export default function Memo() {
                 return (
                   <MemoPreview
                     key={idx}
-                    className='border-grayscale-200 rounded-t-lg border-x-[1px] border-t-[1px]'
+                    className={cn(
+                      'border-grayscale-200',
+                      idx===memos.length-1 ?  'rounded-lg border-[1px]' : ' rounded-t-lg border-x-[1px] border-t-[1px]')}
                     {...item}
                   />
                 );
               }
-              if (idx === MEMO_MOCK_DATA.length - 1) {
+              if (idx === memos.length - 1) {
                 return <MemoPreview key={idx} className='border-grayscale-200 rounded-b-lg border-[1px]' {...item} />;
               }
               return <MemoPreview key={idx} className='border-grayscale-200 border-x-[1px] border-t-[1px]' {...item} />;
