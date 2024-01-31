@@ -1,4 +1,4 @@
-import { Todo } from '../../api/todos/[slug]/route';
+import { Todo } from '@/app/api/todos/[slug]/route';
 
 export interface TodoListItem {
   id: number;

@@ -1,7 +1,6 @@
-import React from 'react';
-import { Todo } from '../../api/todos/[slug]/route';
-import { getTodoList } from '../apis/todo';
 import { TodoItem } from './TodoItem';
+import { Todo } from '@/app/api/todos/[slug]/route';
+import { getTodoList } from '@/app/todo/apis/todo';
 
 interface TodoProps {
   db: string;

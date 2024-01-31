@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TodoListContainer } from './components/TodoListContainer';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 
@@ -13,6 +13,7 @@ export default function Todo() {
     setDB(db);
     setToken(token);
   }, []);
+
   return (
     <Tabs initialTab='today'>
       <TabList>
