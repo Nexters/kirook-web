@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { MemoResponse } from '../api/memos/[memoListId]/interface';
 import MemoPreview from './components/MemoPreview';
 import { MemoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';
@@ -74,13 +75,13 @@ export default function Memo() {
   const [selectedTag, setSelectedTag] = useState('ALL');
   const [selectedMemoes, setSelectedMemoes] = useState(filterMemoes(selectedTag, MEMO_MOCK_DATA));
   const fetchMemo = async (accessToken: string, memolistId: string) => {
-    const res = await axios.get(`/api/memos/${memolistId}`, {
+    const res = await axios.get<MemoResponse>(`/api/memos/${memolistId}`, {
       headers: {
         Authorization: accessToken,
       },
     });
 
-    console.log(res.data);
+    console.log(res.data.memos);
   };
 
   useEffect(() => {
