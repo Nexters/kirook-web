@@ -64,7 +64,7 @@ const MEMO_MOCK_DATA = [
 
 const TAGS_MOCK_DATA = ['태그에요태그열자에요', '태그3', 'TAG태그8'];
 
-export default function Todo() {
+export default function Memo() {
   const filterMemoes = (tag: string, memoes: memoProps[]) => {
     if (tag === 'ALL') return memoes;
     return memoes.filter((memo: memoProps) => memo.tags.includes(tag));
