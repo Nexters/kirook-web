@@ -1,6 +1,37 @@
-import { NextResponse } from 'next/server';
-import { Memo, NotionMemo } from '../../[memoListId]/interface';
+import { NextRequest, NextResponse } from 'next/server';
+import { Memo, NotionMemo, NotionMemoResponse } from '../../[memoListId]/interface';
 import axios, { AxiosError } from 'axios';
+
+export async function GET(request: NextRequest, { params }: { params: { memoId: string } }) {
+  const slug = params.memoId;
+  const url = `https://api.notion.com/v1/pages/${slug}`;
+
+  const accessToken = request.headers.get('Authorization');
+  try {
+    const resp = await axios.get<NotionMemo>(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Notion-Version': '2022-06-28',
+      },
+    });
+
+    const { id, properties } = resp.data;
+    const { tags, text, title } = properties;
+    const { created_time } = properties['Created time'];
+    return NextResponse.json<Memo>({
+      id,
+      tags: tags.multi_select,
+      text: text.rich_text[0].plain_text,
+      title: title.title[0].plain_text,
+      createdAt: created_time,
+    });
+  } catch (e) {
+    const error = e as AxiosError;
+    return new Response(error.message, {
+      status: error.status,
+    });
+  }
+}
 
 export async function PATCH(request: Request, { params }: { params: { slug: string } }) {
   const slug = params.slug;
@@ -23,10 +54,11 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
       },
     });
     if (res.status === 200) {
-      const { properties } = res.data;
+      const { properties, id } = res.data;
       const { tags, text, title } = properties;
       const { created_time } = properties['Created time'];
       return NextResponse.json<Memo>({
+        id,
         tags: tags.multi_select,
         text: text.rich_text[0].plain_text,
         title: title.title[0].plain_text,

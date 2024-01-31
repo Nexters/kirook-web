@@ -13,6 +13,7 @@ export interface MemoResponse {
 }
 
 export interface Memo {
+  id: string;
   tags: MultiSelectOption[];
   title: string;
   text: string;

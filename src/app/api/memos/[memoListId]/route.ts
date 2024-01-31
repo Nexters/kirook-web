@@ -24,6 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: { memoList
       const { created_time } = memo.properties['Created time'];
 
       return {
+        id: memo.id,
         tags: tags.multi_select,
         title: title.title[0].plain_text,
         text: text.rich_text[0].plain_text,
@@ -109,10 +110,11 @@ export async function POST(request: Request, { params }: { params: { memoListId:
     });
 
     if (res.status === 200) {
-      const { properties } = res.data;
+      const { properties, id } = res.data;
       const { tags, text, title } = properties;
       const { created_time } = properties['Created time'];
       return NextResponse.json<Memo>({
+        id,
         tags: tags.multi_select,
         text: text.rich_text[0].plain_text,
         title: title.title[0].plain_text,
