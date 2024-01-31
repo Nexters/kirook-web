@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MemoPreview from './components/MemoPreview';
 import { MemoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
+import axios from 'axios';
 
 interface memoProps {
   title: string;
@@ -72,7 +73,23 @@ export default function Memo() {
 
   const [selectedTag, setSelectedTag] = useState('ALL');
   const [selectedMemoes, setSelectedMemoes] = useState(filterMemoes(selectedTag, MEMO_MOCK_DATA));
+  const fetchMemo = async (accessToken: string, memolistId: string) => {
+    const res = await axios.get(`/api/memos/${memolistId}`, {
+      headers: {
+        Authorization: accessToken,
+      },
+    });
 
+    console.log(res.data);
+  };
+
+  useEffect(() => {
+    const memoListId = localStorage.getItem('memo');
+    const accessToken = localStorage.getItem('accessToken');
+    if (memoListId !== null && accessToken !== null) {
+      fetchMemo(accessToken, memoListId);
+    }
+  }, []);
   return (
     <>
       <div className='bg-grayscale-50 flex h-screen w-full flex-col'>
