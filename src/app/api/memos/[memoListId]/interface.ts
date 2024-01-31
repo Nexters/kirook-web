@@ -57,10 +57,11 @@ interface MultiSelectProperty extends Property {
   multi_select: MultiSelectOption[];
 }
 
-interface MultiSelectOption {
+export interface MultiSelectOption {
   color: string;
   id?: string;
   name: string;
+  description?: string | null;
   // Replace this with the actual structure of the object inside the multi_select array
 }
 
