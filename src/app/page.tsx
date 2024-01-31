@@ -1,10 +1,16 @@
 'use client';
 
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { Navigation } from '@/shared/components';
+import { KirookLogo, NotionLogo } from '@/assets/logo';
 
 export default function Home() {
   useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      redirect('/todo');
+    }
+
     if (process.env.NEXT_PUBLIC_ENV === 'dev' && !localStorage.getItem('accessToken')) {
       const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN || '';
       const todo = process.env.NEXT_PUBLIC_TODO || '';
@@ -19,11 +25,17 @@ export default function Home() {
   }, []);
   return (
     <main>
-      <p className='text-[24px] font-semibold'>세상에 이런 폰트가 나오다니 천재인듯</p>
-      <Navigation />
-      <button className='rounded-sm border-2 border-black p-6 hover:bg-gray-200'>
-        <a href={process.env.NEXT_PUBLIC_AUTH_URL}>노션 연동하기</a>
-      </button>
+      <div className='flex h-screen flex-col items-center justify-around'>
+        <Image src={KirookLogo} alt='service logo' />
+        <button className='rounded-lg bg-black px-14 py-4 text-white'>
+          <a href={process.env.NEXT_PUBLIC_AUTH_URL}>
+            <div className='flex gap-2'>
+              <Image src={NotionLogo} alt='notion logo' className='h-5 w-5' />
+              <h4 className='header1'>Notion 연동하고 시작하기</h4>
+            </div>
+          </a>
+        </button>
+      </div>
     </main>
   );
 }
