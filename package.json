@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.18.0",
     "axios": "^1.6.5",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
