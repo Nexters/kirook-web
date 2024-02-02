@@ -10,3 +10,13 @@ export const createMemo = async (accessToken: string, memoListId: string, memo: 
 
   return res.data;
 };
+
+export const deleteMemo = async (accessToken: string, memoId: string) => {
+  const res = await axios.delete(`/api/memos/memo/${memoId}`, {
+    headers: {
+      Authorization: accessToken,
+    },
+  });
+
+  return res.data;
+};

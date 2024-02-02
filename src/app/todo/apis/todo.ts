@@ -54,3 +54,13 @@ export async function updateTodo(accessToken: string, todo: UpdateTodo): Promise
   });
   return res.data;
 }
+
+export const deleteTodo = async (accessToken: string, todoId: string) => {
+  const res = await axios.delete(`/api/todos/todo/${todoId}`, {
+    headers: {
+      Authorization: accessToken,
+    },
+  });
+
+  return res.data;
+};
