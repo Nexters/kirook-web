@@ -2,12 +2,13 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { MemoResponse, Memo, MultiSelectOption } from '../api/memos/[memoListId]/interface';
+import {Memo, MultiSelectOption } from '../api/memos/[memoListId]/interface';
 import MemoPreview from './components/MemoPreview';
 import { MemoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
-import axios from 'axios';
+import useStore from './hooks/useStore';
+import { useRouter } from 'next/navigation';
 
 const TAGS_MOCK_DATA = [
   {
@@ -28,41 +29,31 @@ const TAGS_MOCK_DATA = [
 ];
 
 export default function Memo() {
+  const router = useRouter();
   const filterMemoes = (tag: MultiSelectOption, memoes: Memo[]) => {
     if (tag.name === 'ALL') return memoes;
     return memoes.filter((memo: Memo) => memo.tags.includes(tag));
   };
 
-  const [memos, setMemos]=useState<Memo[]>([])
+  const { memos, isLoading, fetchMemoes } = useStore((state)=>state)
   const [selectedTag, setSelectedTag] = useState<MultiSelectOption>({ name: 'ALL', id: 'all', color: 'gray'});
   const [selectedMemoes, setSelectedMemoes] = useState<Memo[]>(filterMemoes(selectedTag, memos));
-  
-  const fetchMemo = async (accessToken: string, memoListId: string) => {
-    const res = await axios.get<MemoResponse>(`/api/memos/${memoListId}`, {
-      headers: {
-        Authorization: accessToken,
-      },
-    });
-    console.log(res.data.memos)
 
-    return res.data.memos
-  };
-
-  const getMemos = async (accessToken: string, memoListId: string) => {
-    const memos = await fetchMemo(accessToken, memoListId);
-    setMemos(memos)
-    setSelectedMemoes(filterMemoes(selectedTag, memos))
+  const handleClick = (memoId : string) => {
+    router.push(`/memo/write/${memoId}`)
   }
 
   useEffect(() => {
     const memoListId = localStorage.getItem('memo');
     const accessToken = localStorage.getItem('accessToken');
     if (memoListId !== null && accessToken !== null) {
-      getMemos(accessToken, memoListId);
+      fetchMemoes(accessToken, memoListId);
     }
-  }, []);
+  }, [fetchMemoes]);
 
-  console.log(selectedMemoes)
+  useEffect(()=>{
+    setSelectedMemoes(filterMemoes(selectedTag, memos))
+  },[memos, selectedTag])
 
   return (
     <>
@@ -95,9 +86,12 @@ export default function Memo() {
           {/* 메모 총 개수 */}
           <div className='text-grayscale-700 ml-4 py-2 text-[0.625rem]'>{selectedMemoes.length}개의 메모</div>
         </div>
-
+ 
         {/* Memo List 영역 */}
-        <div className='mb-[94px] h-[calc(100vh-13rem)] grow px-[15px] py-3'>
+        { isLoading ? 
+          // NOTE: 로딩뷰 필요
+          ( <div>Loading...</div>) : (
+           <div className='mb-[94px] h-[calc(100vh-13rem)] grow px-[15px] py-3'>
           <div className='no-scrollbar h-full overflow-y-scroll'>
             {selectedMemoes.map((item, idx) => {
               if (idx === 0) {
@@ -108,16 +102,18 @@ export default function Memo() {
                       'border-grayscale-200',
                       idx===memos.length-1 ?  'rounded-lg border-[1px]' : ' rounded-t-lg border-x-[1px] border-t-[1px]')}
                     {...item}
+                    onClick={()=>handleClick(item.id)}
                   />
                 );
               }
               if (idx === memos.length - 1) {
-                return <MemoPreview key={idx} className='border-grayscale-200 rounded-b-lg border-[1px]' {...item} />;
+                return <MemoPreview key={idx} className='border-grayscale-200 rounded-b-lg border-[1px]' {...item} onClick={()=>handleClick(item.id)}/>;
               }
-              return <MemoPreview key={idx} className='border-grayscale-200 border-x-[1px] border-t-[1px]' {...item} />;
+              return <MemoPreview key={idx} className='border-grayscale-200 border-x-[1px] border-t-[1px]' {...item} onClick={()=>handleClick(item.id)}/>;
             })}
           </div>
         </div>
+        )}
       </div>
       <Navigation />
     </>

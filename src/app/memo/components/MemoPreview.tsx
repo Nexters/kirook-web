@@ -4,13 +4,17 @@ import dayjs from 'dayjs';
 
 interface MemoPreview extends Memo {
   className: string;
+  onClick: () => void;
 }
 
-const MemoPreview = ({ title, createdAt, tags, className }: MemoPreview) => {
+const MemoPreview = ({ title, createdAt, tags, className, onClick }: MemoPreview) => {
   const formattedDate = dayjs(createdAt).format('YYYY.MM.DD');
 
   return (
-    <div className={cn('w-100 border-grayscale-200 flex flex-col gap-2.5 border-solid bg-white p-3.5', className)}>
+    <div
+      className={cn('w-100 border-grayscale-200 flex flex-col gap-2.5 border-solid bg-white p-3.5', className)}
+      onClick={onClick}
+    >
       <h4 className='truncate font-bold'>{title}</h4>
       <p className='text-grayscale-500 text-xs'>{formattedDate}</p>
       <div className='no-scrollbar flex flex-nowrap justify-between gap-1 overflow-x-scroll'>
