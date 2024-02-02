@@ -29,5 +29,24 @@ export async function GET(request: Request, { params }: { params: { pageId: stri
 
       return { id: block.id, title: block.child_database?.title || '' };
     });
-  return NextResponse.json({ databases });
+
+  const res = NextResponse.json({ databases });
+
+  databases.forEach((db) => {
+    switch (db.title) {
+      case 'todo':
+        res.cookies.set('todo', db.id);
+        return;
+      case 'memo':
+        res.cookies.set('memo', db.id);
+        return;
+      case 'link':
+        res.cookies.set('link', db.id);
+        return;
+      default:
+        return;
+    }
+  });
+
+  return res;
 }

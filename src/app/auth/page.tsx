@@ -79,8 +79,6 @@ export default function Auth() {
 
     const { accessToken, pageId } = response;
     if (accessToken) {
-      localStorage.setItem('accessToken', accessToken);
-
       const dbResponse = await http.get<DatabaseResponse>(`/api/db/${pageId}`, {
         headers: {
           Authorization: accessToken,
