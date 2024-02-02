@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { NotionTodo, NotionTodoAllResponse } from '@/app/api/todos/interfaces';
 import http from '@/shared/utils/fetch';
@@ -61,14 +60,15 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
 
 // Create Todo
 export async function POST(request: NextRequest, { params }: { params: { slug: string } }) {
-  const todolistId = params.slug;
+  const slug = params.slug;
+  const accessToken = request.cookies.get('accessToken')?.value;
   const body = await request.json();
 
   const url = 'https://api.notion.com/v1/pages';
 
-  const newTodo = {
+  const data = {
     parent: {
-      database_id: todolistId,
+      database_id: slug,
     },
     properties: {
       status: {
@@ -108,7 +108,12 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
     },
   };
   try {
-    const response = await http.post<NotionTodo>(url, newTodo);
+    const response = await http.post<NotionTodo>(url, data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Notion-Version': '2022-06-28',
+      },
+    });
 
     const { id, properties } = response;
     return NextResponse.json<Todo>({
@@ -118,6 +123,7 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
       status: properties.status.checkbox,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(error, { status: 500 });
   }
 }

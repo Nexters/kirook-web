@@ -1,11 +1,12 @@
 'use client';
 
 import { ChangeEvent, useRef, useState } from 'react';
-import { createTodo } from '../apis/todo';
+import { useCreateTodo } from '../queries/useCreateTodo';
 import { Icon } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
 
 export function TodoInput() {
+  const { mutate: createTodo } = useCreateTodo();
   const [input, setInput] = useState('');
   const [isInputActivated, setIsInputActivated] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -16,12 +17,10 @@ export function TodoInput() {
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: todo 추가하는 API 연동
-    const accessToken = localStorage.getItem('accessToken') || '';
-    const dbId = localStorage.getItem('todo') || '';
-    const res = await createTodo(accessToken, dbId, input);
 
-    alert(res.text); // TODO 생성 성공시 액션..
+    createTodo(input);
+    setIsInputActivated(false);
+    setInput('');
   };
 
   const handleInputToggleButtonClick = () => {
@@ -42,7 +41,7 @@ export function TodoInput() {
       </button>
       <div className='relative flex w-full items-center gap-2'>
         <p
-          className={cn('text-body1 text-grayscale-600 absolute left-0', {
+          className={cn('text-body1 absolute left-0 text-grayscale-600', {
             hidden: isInputActivated,
           })}
         >
@@ -58,9 +57,9 @@ export function TodoInput() {
             type='text'
             value={input}
             onChange={handleInputChange}
-            className='text-body2 caret-grayscale-600 focus:shadow-input-focus grow py-[2.5px] outline-none transition-all duration-300'
+            className='text-body2 grow py-[2.5px] caret-grayscale-600 outline-none transition-all duration-300 focus:shadow-input-focus'
           />
-          <button type='submit' className='text-button text-grayscale-700 w-fit'>
+          <button type='submit' className='text-button w-fit text-grayscale-700'>
             확인
           </button>
         </div>

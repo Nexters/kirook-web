@@ -1,4 +1,3 @@
-import { cache } from 'react';
 import type { UpdateTodo } from './types';
 import { Todo, TodoResponse } from '@/app/api/todos/[slug]/route';
 import http from '@/shared/utils/fetch';
@@ -14,26 +13,17 @@ export const getTodoList = async (todolistId?: string, isToday: boolean = true) 
   return todos;
 };
 
-export async function createTodo(accessToken: string, todolistId: string, text: string, isToday: boolean = true) {
-  const created_at = new Date();
-  if (!todolistId || !accessToken) {
+export async function createTodo(text: string, todolistId?: string, isToday: boolean = true) {
+  if (!todolistId) {
     return {} as Todo;
   }
 
   const url = isToday ? `/api/todos/today/${todolistId}` : `/api/todos/tomorrow/${todolistId}`;
-  const response = await http.post<Todo>(
-    url,
-    {
-      created_at,
-      status: false,
-      text,
-    },
-    {
-      headers: {
-        Authorization: accessToken,
-      },
-    },
-  );
+  const response = await http.post<Todo>(url, {
+    created_at: new Date(),
+    status: false,
+    text,
+  });
 
   return response;
 }
