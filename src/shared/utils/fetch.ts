@@ -1,7 +1,7 @@
 type FetchUrl = string | URL | globalThis.Request;
 type AnyBody = Record<string, any>;
 
-async function request<Response>(url: FetchUrl, init: RequestInit = {}): Promise<Response> {
+async function request<Response>(url: FetchUrl, { headers, ...rest }: RequestInit = {}): Promise<Response> {
   const baseUrl = '';
   const requestUrl = `${baseUrl}${url}`;
 
@@ -9,11 +9,13 @@ async function request<Response>(url: FetchUrl, init: RequestInit = {}): Promise
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      ...headers,
     },
-    ...init,
+    ...rest,
   });
+
   if (response.status !== 200) {
-    throw new Error(`status code: ${response.status} error가 발생했습니다`);
+    throw new Error(`status code: ${response.status} error가 발생했습니다!!`);
   }
 
   const json = await response.json();
