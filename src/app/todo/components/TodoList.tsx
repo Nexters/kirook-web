@@ -1,15 +1,11 @@
+'use client';
+
+import { useGetTodos } from '../queries/useGetTodos';
 import { TodoItem } from './TodoItem';
 import { Todo } from '@/app/api/todos/[slug]/route';
-import { getTodoList } from '@/app/todo/apis/todo';
 
-interface TodoProps {
-  db: string;
-  accessToken: string;
-}
-
-export async function TodoList({ db, accessToken }: TodoProps) {
-  const todos = await getTodoList(accessToken, db);
-
+export function TodoList() {
+  const { data: todos } = useGetTodos();
   const sorted = sortTodoListByIsFullfilled(todos);
 
   return (

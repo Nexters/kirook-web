@@ -1,24 +1,18 @@
+import { cache } from 'react';
 import type { UpdateTodo } from './types';
 import { Todo, TodoResponse } from '@/app/api/todos/[slug]/route';
 import http from '@/shared/utils/fetch';
 
-// TODO: 오늘 내일 구분 필요
-export async function getTodoList(accessToken: string, todolistId: string, isToday: boolean = true) {
-  if (!todolistId || !accessToken) {
+export const getTodoList = async (todolistId?: string, isToday: boolean = true) => {
+  if (!todolistId) {
     return [];
   }
-
   const url = isToday ? `/api/todos/today/${todolistId}` : `/api/todos/tomorrow/${todolistId}`;
-
-  const response = await http.get<TodoResponse>(url, {
-    headers: {
-      Authorization: accessToken,
-    },
-  });
+  const response = await http.get<TodoResponse>(url);
   const { todos } = response;
 
   return todos;
-}
+};
 
 export async function createTodo(accessToken: string, todolistId: string, text: string, isToday: boolean = true) {
   const created_at = new Date();
@@ -50,7 +44,7 @@ export async function updateTodo(accessToken: string, todo: UpdateTodo) {
 
   const { id, ...rest } = todo;
 
-  const response = await http.post<Todo>(`/api/todos/todo/${id}`, rest, {
+  const response = await http.patch<Todo>(`/api/todos/todo/${id}`, rest, {
     headers: {
       Authorization: accessToken,
     },

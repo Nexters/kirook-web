@@ -26,7 +26,15 @@ export async function POST(request: Request) {
     });
     const { access_token: accessToken, duplicated_template_id: pageId } = response;
 
-    return NextResponse.json({ accessToken, pageId }, { status: 200 });
+    return NextResponse.json(
+      { accessToken, pageId },
+      {
+        status: 200,
+        headers: {
+          'Set-Cookie': `accessToken=${accessToken}}; max-age=-1`,
+        },
+      },
+    );
     // TODO: auth와 block api 분리 후 각각 호출
   } catch (error) {
     // TODO: status code는 봐야할듯
