@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.18.0",
+    "@tanstack/react-query-devtools": "^5.18.1",
     "axios": "^1.6.5",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.0",
