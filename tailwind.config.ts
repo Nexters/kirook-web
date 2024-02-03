@@ -32,7 +32,7 @@ const config: Config = {
         title3: [
           '1rem',
           {
-            fontWeight: '600',
+            fontWeight: '500',
           },
         ],
         body1: [
@@ -67,6 +67,7 @@ const config: Config = {
         grayscale: {
           50: '#F7F7FA',
           100: '#F0F0F5',
+          150: '#F2F4F6',
           200: '#E8E8EE',
           300: '#E1E1E8',
           400: '#CDCED6',

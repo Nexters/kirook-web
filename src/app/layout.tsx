@@ -13,7 +13,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='ko' className={`${pretendard.variable}`}>
       <head />
       <body className={`${pretendard.className}`}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          {children}
+          <div id='modal-root' />
+        </QueryProvider>
       </body>
     </html>
   );

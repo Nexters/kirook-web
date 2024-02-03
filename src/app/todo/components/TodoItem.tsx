@@ -4,6 +4,8 @@ import { FormEvent, useCallback, useRef, useState } from 'react';
 import React from 'react';
 import { useDeleteTodo } from '../queries/useDeleteTodo';
 import { Icon } from '@/shared/components';
+import { Button } from '@/shared/components/Button';
+import { Modal } from '@/shared/components/Modal';
 
 interface TodoItemProps {
   id: string;
@@ -13,9 +15,18 @@ interface TodoItemProps {
 
 export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
   const { mutate: deleteTodo } = useDeleteTodo();
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const previousContent = useRef(content);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const openModal = useCallback(() => {
+    setIsOpenModal(true);
+  }, []);
+
+  const closeModal = () => {
+    setIsOpenModal(false);
+  };
 
   const handleClickToggle = () => {
     // TODO: API 호출
@@ -33,8 +44,8 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
       return;
     }
 
-    deleteTodo(id);
-  }, [isEditMode, deleteTodo, id]);
+    openModal();
+  }, [isEditMode, openModal]);
 
   const resetInput = useCallback(() => {
     if (!isEditMode) return;
@@ -67,6 +78,20 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
       <button type='button' className='w-fit shrink-0 text-button text-grayscale-700' onClick={handleClickButton}>
         {isEditMode ? '확인' : '삭제'}
       </button>
+      {
+        <Modal
+          isOpen={isOpenModal}
+          title='삭제하실건가요?'
+          message='삭제한 내용은 되돌릴 수 없어요'
+          firstButton={<Button onClick={() => deleteTodo(id)}>확인</Button>}
+          secondButton={
+            <Button color='secondary' onClick={() => closeModal()}>
+              취소
+            </Button>
+          }
+          close={() => closeModal()}
+        />
+      }
     </form>
   );
 }

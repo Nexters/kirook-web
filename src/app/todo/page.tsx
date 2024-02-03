@@ -2,7 +2,6 @@
 
 import { TodoInput } from './components/TodoInput';
 import { TodoList } from './components/TodoList';
-import { TodoListContainer } from './components/TodoListContainer';
 import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodos } from './queries/useGetTodos';
 import { TodoLogo } from '@/assets/logo';
