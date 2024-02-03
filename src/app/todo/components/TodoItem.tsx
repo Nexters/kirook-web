@@ -1,10 +1,9 @@
 'use client';
 
 import { FormEvent, useCallback, useRef, useState } from 'react';
-import React from 'react';
 import { useDeleteTodo } from '../queries/useDeleteTodo';
-import { Icon } from '@/shared/components';
 import { Button } from '@/shared/components/Button';
+import { CheckBox } from '@/shared/components/CheckBox';
 import { Modal } from '@/shared/components/Modal';
 
 interface TodoItemProps {
@@ -28,7 +27,7 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
     setIsOpenModal(false);
   };
 
-  const handleClickToggle = () => {
+  const toggleCheck = () => {
     // TODO: API 호출
     // toggle에 API 호출 너무 자주 일어날려나? API 기다려야하나?
   };
@@ -65,9 +64,7 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
 
   return (
     <form className='flex w-full items-start gap-2 py-3' onSubmit={handleSubmit}>
-      <button type='button' className='flex items-center justify-center' onClick={handleClickToggle}>
-        <Icon iconType={isFullfilled ? 'CheckFilled' : 'Check'} />
-      </button>
+      <CheckBox isChecked={isFullfilled} onClick={() => toggleCheck()} />
       <input
         ref={inputRef}
         className='h-auto grow resize-none overflow-hidden bg-transparent text-body2 leading-[24px] outline-none transition-colors duration-300 focus:bg-grayscale-50'

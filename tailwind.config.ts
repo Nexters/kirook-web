@@ -61,9 +61,12 @@ const config: Config = {
         ],
       },
       boxShadow: {
-        'input-focus': 'inset 0 -2px 0 #FD0000',
+        'input-focus': 'inset 0 -2px 0 #5ED236',
       },
       colors: {
+        accent: {
+          500: '#5ED236',
+        },
         grayscale: {
           50: '#F7F7FA',
           100: '#F0F0F5',
