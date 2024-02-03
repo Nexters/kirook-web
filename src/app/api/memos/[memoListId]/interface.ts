@@ -57,6 +57,35 @@ interface MultiSelectProperty extends Property {
   multi_select: MultiSelectOption[];
 }
 
+export interface NotionTag {
+  object: string;
+  id: string;
+  created_time: string;
+  last_edited_time: string;
+  created_by: User;
+  last_edited_by: User;
+  cover: null;
+  icon: null;
+  parent: Parent;
+  archived: boolean;
+  properties: TagProperties;
+  url: string;
+  public_url: null;
+}
+
+export interface TagProperties {
+  tags: {
+    multi_select: TagOptions;
+  };
+  'Created time': CreatedTimeProperty;
+  text: RichTextProperty;
+  title: TitleProperty;
+}
+
+export interface TagOptions {
+  options: MultiSelectOption[];
+}
+
 export interface MultiSelectOption {
   color: string;
   id?: string;
