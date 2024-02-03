@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Database } from '../api/auth/interfaces';
 import { DatabaseResponse } from '../api/db/[pageId]/route';
 import axios, { AxiosResponse } from 'axios';
@@ -12,28 +12,38 @@ const redirectUri = 'https://kirook.vercel.app/auth';
 export default function Auth() {
   const params = useSearchParams();
   const code = params.get('code');
+  const [token, setToken] = useState('');
+  const [pageId, setPageId] = useState('');
   const router = useRouter();
 
-  const handlePost = async () => {
-    if (!code) {
-      alert('no code');
-      return;
+  useEffect(() => {
+    const handleCodePost = async () => {
+      if (!code) {
+        alert('no code');
+        return;
+      }
+
+      const res = await axios.post<any, AxiosResponse<any>>('/api/auth', {
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: redirectUri,
+      });
+
+      const { accessToken, pageId } = res.data;
+      setToken(accessToken);
+      setPageId(pageId);
+    };
+
+    if (code) {
+      handleCodePost();
     }
+  }, [code]);
 
-    const res = await axios.post<any, AxiosResponse<any>>('/api/auth', {
-      grant_type: 'authorization_code',
-      code: code,
-      redirect_uri: redirectUri,
-    });
-
-    const { accessToken, pageId } = res.data;
-    if (accessToken) {
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('pageId', pageId);
-
+  useEffect(() => {
+    const handleDBLookup = async () => {
       const res = await axios.get<DatabaseResponse>(`/api/db/${pageId}`, {
         headers: {
-          Authorization: accessToken,
+          Authorization: token,
         },
       });
 
@@ -41,12 +51,11 @@ export default function Auth() {
       setDatabase(databases);
 
       router.push('/todo');
+    };
+    if (token && pageId) {
+      handleDBLookup();
     }
-    // TODO:
-    /**
-     * access_token 등으로 todolist 추가하는 로직
-     */
-  };
+  }, [token, pageId, router]);
 
   const setDatabase = (databases: Database[]) => {
     databases.forEach((db) => {
@@ -69,9 +78,6 @@ export default function Auth() {
   return (
     <section className='h-full w-full p-6'>
       <div>auth succeed</div>
-      <button className='text-green-500' onClick={handlePost}>
-        연동완료
-      </button>
     </section>
   );
 }
