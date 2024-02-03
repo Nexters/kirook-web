@@ -1,4 +1,4 @@
-import { Memo, MemoResponse } from '@/app/api/memos/[memoListId]/interface';
+import { Memo, MemoResponse } from '@/app/api/memos/[mmid]/interface';
 import axios from 'axios';
 
 export const fetchMemoes = async (accessToken: string, memoListId: string) => {

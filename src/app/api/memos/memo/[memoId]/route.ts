@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Memo, NotionMemo, NotionMemoResponse } from '../../[memoListId]/interface';
+import { Memo, NotionMemo, NotionMemoResponse } from '../../[mmid]/interface';
 import axios, { AxiosError } from 'axios';
 
 export async function GET(request: NextRequest, { params }: { params: { memoId: string } }) {

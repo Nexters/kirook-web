@@ -1,4 +1,4 @@
-import { Memo } from '../../api/memos/[memoListId]/interface';
+import { Memo } from '../../api/memos/[mmid]/interface';
 import { fetchMemoes, getMemoItem } from '../apis/memo';
 import { create } from 'zustand';
 
