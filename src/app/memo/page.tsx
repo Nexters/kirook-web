@@ -9,6 +9,7 @@ import { Navigation } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
 import useStore from './hooks/useStore';
 import { useRouter } from 'next/navigation';
+import { MemoAddButton } from './components/MemoAddButton';
 
 const TAGS_MOCK_DATA = [
   {
@@ -114,6 +115,9 @@ export default function Memo() {
           </div>
         </div>
         )}
+        <MemoAddButton 
+          onClick={()=>router.push('/memo/write')} 
+          className="absolute bottom-[7rem] right-[1rem] flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-black shadow-lg shadow-grayscale-500"/>
       </div>
       <Navigation />
     </>
