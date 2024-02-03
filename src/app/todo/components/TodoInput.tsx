@@ -22,6 +22,11 @@ export function TodoInput() {
     }
   };
 
+  const resetInput = () => {
+    setIsInputActivated(false);
+    setInput('');
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
@@ -30,8 +35,7 @@ export function TodoInput() {
     e.preventDefault();
 
     createTodo(input);
-    setIsInputActivated(false);
-    setInput('');
+    resetInput();
   };
 
   return (
@@ -39,7 +43,7 @@ export function TodoInput() {
       <TodoAddButton isInputActivated={isInputActivated} onClick={() => toggleTodoInput()} />
       <div className='relative flex w-full items-center gap-2'>
         <p
-          className={cn('absolute left-0 text-body1 text-grayscale-600', {
+          className={cn('absolute left-0 text-title3 text-grayscale-600', {
             hidden: isInputActivated,
           })}
         >
@@ -55,8 +59,8 @@ export function TodoInput() {
             type='text'
             value={input}
             onChange={handleInputChange}
-            onBlur={() => setIsInputActivated(false)}
-            className='grow rounded-sm p-0.5 text-body2 caret-grayscale-600 outline-none transition-all duration-300 focus:bg-grayscale-100'
+            onBlur={() => resetInput()}
+            className='grow rounded-sm p-0.5 text-title3 caret-grayscale-600 outline-none transition-all duration-300 focus:bg-grayscale-100'
           />
           <button type='submit' className='w-fit text-body1 text-grayscale-700'>
             확인
