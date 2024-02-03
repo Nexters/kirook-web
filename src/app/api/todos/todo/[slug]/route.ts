@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Todo } from '../../[slug]/route';
 import { NotionTodo } from '../../interfaces';
+import http from '@/shared/utils/fetch';
 import axios, { AxiosError } from 'axios';
 
 // Update Todo
@@ -72,12 +73,12 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
-  const slug = params.slug;
-  const url = `https://api.notion.com/v1/pages/${slug}`;
+  const todoId = params.slug;
+  const url = `https://api.notion.com/v1/pages/${todoId}`;
+  const accessToken = request.cookies.get('accessToken')?.value;
 
-  const accessToken = request.headers.get('Authorization');
   try {
-    const resp = await axios.patch(
+    const response = await http.patch(
       url,
       {
         archived: true,
@@ -89,16 +90,10 @@ export async function DELETE(request: NextRequest, { params }: { params: { slug:
         },
       },
     );
+    console.log(response);
 
-    if (resp.status === 200) {
-      return NextResponse.json({ message: 'ok' });
-    } else {
-      return new Response('request failed', { status: resp.status });
-    }
-  } catch (e) {
-    const error = e as AxiosError;
-    return new Response(error.message, {
-      status: error.status,
-    });
+    return NextResponse.json({ message: 'ok' });
+  } catch (error) {
+    return NextResponse.json(error, { status: 500 });
   }
 }

@@ -43,16 +43,8 @@ export async function updateTodo(accessToken: string, todo: UpdateTodo) {
   return response;
 }
 
-export const deleteTodo = async (accessToken: string, todoId: string) => {
-  const response = await http.delete(
-    `/api/todos/todo/${todoId}`,
-    {},
-    {
-      headers: {
-        Authorization: accessToken,
-      },
-    },
-  );
+export async function deleteTodo(todoId: string) {
+  const response = await http.delete(`/api/todos/todo/${todoId}`, {});
 
   return response;
-};
+}
