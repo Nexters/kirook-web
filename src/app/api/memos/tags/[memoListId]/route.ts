@@ -22,7 +22,6 @@ export async function GET(request: NextRequest, { params }: { params: { memoList
     return NextResponse.json<Omit<MultiSelectOption, 'description'>[]>(tagList);
   } catch (e) {
     const error = e as AxiosError;
-    console.log(error.message, error.code, error.toJSON());
     return new Response(error.message, {
       status: error.status,
     });
