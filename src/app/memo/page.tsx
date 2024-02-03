@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import {Memo, MultiSelectOption } from '../api/memos/[mmid]/interface';
+import {Memo, MultiSelectOption } from '../api/memos/[memoListId]/interface';
 import MemoPreview from './components/MemoPreview';
 import { MemoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';

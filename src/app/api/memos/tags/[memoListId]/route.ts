@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MultiSelectOption, NotionMemo } from '../../[mmid]/interface';
+import { MultiSelectOption, NotionMemo } from '../../[memoListId]/interface';
 import axios, { AxiosError } from 'axios';
 
 export async function GET(request: NextRequest, { params }: { params: { memoId: string } }) {

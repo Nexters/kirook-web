@@ -1,4 +1,4 @@
-import { Memo } from '../../api/memos/[mmid]/interface';
+import { Memo } from '../../api/memos/[memoListId]/interface';
 import { cn } from '@/shared/utils/cn';
 import dayjs from 'dayjs';
 
