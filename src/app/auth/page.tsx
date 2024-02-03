@@ -41,16 +41,25 @@ export default function Auth() {
 
   useEffect(() => {
     const handleDBLookup = async () => {
-      const res = await axios.get<DatabaseResponse>(`/api/db/${pageId}`, {
-        headers: {
-          Authorization: token,
-        },
-      });
+      try {
+        const res = await axios.get<DatabaseResponse>(`/api/db/${pageId}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
 
-      const { databases } = res.data;
-      setDatabase(databases);
+        if (res.status !== 200) {
+          console.log(res.status, res.data);
+          throw new Error('fetch failed');
+        }
 
-      router.push('/todo');
+        const { databases } = res.data;
+        setDatabase(databases);
+
+        router.push('/todo');
+      } catch (e) {
+        console.log(e);
+      }
     };
     if (token && pageId) {
       setTimeout(() => {
