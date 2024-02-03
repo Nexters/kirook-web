@@ -30,6 +30,8 @@ export default function Auth() {
       });
 
       const { accessToken, pageId } = res.data;
+
+      localStorage.setItem('accessToken', accessToken);
       setToken(accessToken);
       setPageId(pageId);
     };
