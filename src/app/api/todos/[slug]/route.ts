@@ -123,7 +123,6 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
       status: properties.status.checkbox,
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(error, { status: 500 });
   }
 }

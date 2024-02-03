@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Todo } from '../../[slug]/route';
-import { NotionTodo } from '../../interfaces';
+import { Todo } from '@/app/api/todos/[slug]/route';
+import { NotionTodo } from '@/app/api/todos/interfaces';
 import http from '@/shared/utils/fetch';
 import axios, { AxiosError } from 'axios';
 
@@ -90,9 +90,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { slug:
         },
       },
     );
-    console.log(response);
 
-    return NextResponse.json({ message: 'ok' });
+    return NextResponse.json({ message: 'ok', response });
   } catch (error) {
     return NextResponse.json(error, { status: 500 });
   }
