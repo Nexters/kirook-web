@@ -25,13 +25,13 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
         {
           property: 'created_at',
           date: {
-            after: dayjs().toISOString(), // 오늘 00시 이후
+            after: dayjs().startOf('day').toISOString(), // 오늘 00시 이후
           },
         },
         {
           property: 'created_at',
           date: {
-            before: dayjs().add(1, 'day').toISOString(), // 내일 00시 이전
+            before: dayjs().add(1, 'day').startOf('day').toISOString(), // 내일 00시 이전
           },
         },
       ],

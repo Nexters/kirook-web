@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
     filter: {
       property: 'created_at',
       date: {
-        after: dayjs().add(1, 'day').toISOString(), // 오늘 00시 이후
+        after: dayjs().add(1, 'day').startOf('day').toISOString(), // 오늘 00시 이후
       },
     },
   };
