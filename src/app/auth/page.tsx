@@ -53,7 +53,9 @@ export default function Auth() {
       router.push('/todo');
     };
     if (token && pageId) {
-      handleDBLookup();
+      setTimeout(() => {
+        handleDBLookup();
+      }, 1000);
     }
   }, [token, pageId, router]);
 
