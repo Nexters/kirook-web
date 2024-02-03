@@ -12,13 +12,41 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
   const url = `https://api.notion.com/v1/pages/${slug}`;
 
   const data = {
+    parent: {
+      database_id: slug,
+    },
     properties: {
-      ...body,
+      status: {
+        type: 'checkbox',
+        checkbox: false,
+      },
+      text: {
+        type: 'title',
+        title: [
+          {
+            type: 'text',
+            text: {
+              content: body.text,
+              link: null,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: body.text,
+            href: null,
+          },
+        ],
+      },
     },
   };
 
   try {
-    const res = await axios.post<NotionTodo>(url, data, {
+    const res = await axios.patch<NotionTodo>(url, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Notion-Version': '2022-06-28',

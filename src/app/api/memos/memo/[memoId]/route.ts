@@ -41,8 +41,58 @@ export async function PATCH(request: Request, { params }: { params: { slug: stri
   const url = `https://api.notion.com/v1/pages/${slug}`;
 
   const data = {
+    parent: {
+      database_id: slug,
+    },
     properties: {
-      ...body,
+      tags: {
+        type: 'multi_select',
+        multi_select: body.tags,
+      },
+      text: {
+        type: 'rich_text',
+        rich_text: [
+          {
+            type: 'text',
+            text: {
+              content: body.text,
+              link: null,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: body.text,
+            href: null,
+          },
+        ],
+      },
+      title: {
+        type: 'title',
+        title: [
+          {
+            type: 'text',
+            text: {
+              content: body.title,
+              link: null,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: body.title,
+            href: null,
+          },
+        ],
+      },
     },
   };
 
