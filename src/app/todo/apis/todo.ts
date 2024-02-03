@@ -4,12 +4,14 @@ import type { TodoListItem, UpdateTodo } from './types';
 import axios from 'axios';
 
 // TODO: 오늘 내일 구분 필요
-export async function getTodoList(accessToken: string, todolistId: string): Promise<Todo[]> {
+export async function getTodoList(accessToken: string, todolistId: string, isToday: boolean = true): Promise<Todo[]> {
   if (!todolistId || !accessToken) {
     return [];
   }
 
-  const res = await axios.get<TodoResponse>(`/api/todos/${todolistId}`, {
+  const url = isToday ? `/api/todos/today/${todolistId}` : `/api/todos/tomorrow/${todolistId}`;
+
+  const res = await axios.get<TodoResponse>(url, {
     headers: {
       Authorization: accessToken,
     },
@@ -19,14 +21,20 @@ export async function getTodoList(accessToken: string, todolistId: string): Prom
   return todos;
 }
 
-export async function createTodo(accessToken: string, todolistId: string, text: string): Promise<Todo> {
+export async function createTodo(
+  accessToken: string,
+  todolistId: string,
+  text: string,
+  isToday: boolean = true,
+): Promise<Todo> {
   const created_at = new Date();
   if (!todolistId || !accessToken) {
     return {} as Todo;
   }
 
+  const url = isToday ? `/api/todos/today/${todolistId}` : `/api/todos/tomorrow/${todolistId}`;
   const res = await axios.post<Todo>(
-    `/api/todos/${todolistId}`,
+    url,
     {
       created_at,
       status: false,

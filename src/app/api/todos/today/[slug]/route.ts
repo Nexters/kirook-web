@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { NotionTodo, NotionTodoAllResponse } from '../interfaces';
+import { NotionTodo, NotionTodoAllResponse } from '../../interfaces';
 import axios, { AxiosError } from 'axios';
+import dayjs from 'dayjs';
 
 export interface Todo {
   status: boolean;
@@ -19,22 +20,22 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   const accessToken = request.headers.get('Authorization');
   const url = `https://api.notion.com/v1/databases/${slug}/query`;
   const req = {
-    // filter: {
-    //   and: [
-    //     {
-    //       property: 'created_at',
-    //       date: {
-    //         after: new Date(), // 오늘 00시 이후
-    //       },
-    //     },
-    //     {
-    //       property: 'created_at',
-    //       date: {
-    //         before: new Date(), // 내일 00시 이전
-    //       },
-    //     },
-    //   ],
-    // },
+    filter: {
+      and: [
+        {
+          property: 'created_at',
+          date: {
+            after: dayjs().toISOString(), // 오늘 00시 이후
+          },
+        },
+        {
+          property: 'created_at',
+          date: {
+            before: dayjs().add(1, 'day').toISOString(), // 내일 00시 이전
+          },
+        },
+      ],
+    },
   };
   try {
     const resp = await axios.post<NotionTodoAllResponse>(url, req, {
@@ -52,7 +53,8 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
 
     return NextResponse.json<TodoResponse>({ todos });
   } catch (e) {
-    return NextResponse.json(e);
+    const err = e as AxiosError;
+    return NextResponse.json(err.message, { status: err.status });
   }
 }
 
@@ -76,7 +78,7 @@ export async function POST(request: Request, { params }: { params: { slug: strin
       created_at: {
         type: 'date',
         date: {
-          start: body.created_at,
+          start: dayjs().toISOString(),
           end: null,
           time_zone: null,
         },
