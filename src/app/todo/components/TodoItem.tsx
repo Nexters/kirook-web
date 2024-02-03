@@ -1,10 +1,9 @@
 'use client';
 
-import { FormEvent, useCallback, useRef, useState } from 'react';
-import { useDeleteTodo } from '../queries/useDeleteTodo';
-import { Button } from '@/shared/components/Button';
-import { CheckBox } from '@/shared/components/CheckBox';
-import { Modal } from '@/shared/components/Modal';
+import { type FocusEvent, type FormEvent, useCallback, useRef, useState } from 'react';
+import { TodoContentEditableText } from './TodoContentEditableText';
+import { useDeleteTodo } from '@/app/todo/queries/useDeleteTodo';
+import { Button, CheckBox, Modal } from '@/shared/components';
 
 interface TodoItemProps {
   id: string;
@@ -14,70 +13,60 @@ interface TodoItemProps {
 
 export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
   const { mutate: deleteTodo } = useDeleteTodo();
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const previousContent = useRef(content);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef(content);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const openModal = useCallback(() => {
-    setIsOpenModal(true);
+    setIsModalOpen(true);
   }, []);
 
   const closeModal = () => {
-    setIsOpenModal(false);
+    setIsModalOpen(false);
   };
 
   const toggleCheck = () => {
     // TODO: API 호출
-    // toggle에 API 호출 너무 자주 일어날려나? API 기다려야하나?
   };
 
-  const handleClickButton = useCallback(() => {
-    if (isEditMode) {
-      const inputValue = inputRef.current?.value;
-      if (inputValue?.length === 0) return;
-
-      // TODO: 수정 로직
-
-      setIsEditMode(false);
-      return;
-    }
-
-    openModal();
-  }, [isEditMode, openModal]);
-
   const resetInput = useCallback(() => {
-    if (!isEditMode) return;
-    if (!inputRef.current) return;
-
-    inputRef.current.value = previousContent.current;
+    textRef.current = content;
     setIsEditMode(false);
-  }, [isEditMode]);
+  }, [content]);
+
+  const handleBlurText = (e: FocusEvent<HTMLDivElement>) => {
+    if (e.relatedTarget === buttonRef.current) return;
+    resetInput();
+  };
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (!isEditMode) return;
+
+      if (isEditMode) {
+        const input = textRef.current;
+        if (input.length === 0) return;
+
+        // TODO: 수정 로직
+        setIsEditMode(false);
+      } else {
+        openModal();
+      }
     },
-    [isEditMode],
+    [isEditMode, openModal],
   );
 
   return (
     <form className='flex w-full items-start gap-2 py-3' onSubmit={handleSubmit}>
-      <CheckBox isChecked={isFullfilled} onClick={() => toggleCheck()} />
-      <input
-        ref={inputRef}
-        className='h-auto grow resize-none overflow-hidden bg-transparent text-title3 leading-[24px] outline-none transition-colors duration-300 focus:bg-grayscale-50'
-        defaultValue={content}
-        onFocus={() => setIsEditMode(true)}
-        onBlur={resetInput}
-      />
-      <button type='button' className='w-fit shrink-0 text-body1 text-grayscale-700' onClick={handleClickButton}>
+      <CheckBox isChecked={isFullfilled} onClick={() => toggleCheck()} className='shrink-0' />
+      <TodoContentEditableText textRef={textRef} onFocus={() => setIsEditMode(true)} onBlur={handleBlurText} />
+      <button ref={buttonRef} type='submit' className='w-fit shrink-0 text-body1 text-grayscale-700'>
         {isEditMode ? '확인' : '삭제'}
       </button>
       {
         <Modal
-          isOpen={isOpenModal}
+          isOpen={isModalOpen}
           title='삭제하실건가요?'
           message='삭제한 내용은 되돌릴 수 없어요'
           firstButton={<Button onClick={() => deleteTodo(id)}>확인</Button>}
