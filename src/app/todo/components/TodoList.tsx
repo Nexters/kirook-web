@@ -6,7 +6,7 @@ import { Todo } from '@/app/api/todos/[slug]/route';
 
 export function TodoList() {
   const { data: todos } = useGetTodos();
-  const sorted = sortTodoListByIsFullfilled(todos);
+  const sorted = sortTodoListByIsFullfilled(todos || []);
 
   return (
     <ul>

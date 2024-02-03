@@ -19,9 +19,7 @@ export function useCreateTodo() {
   return useMutation({
     mutationFn: async (text: string) => createTodo(text, todolistId),
     onSuccess: () => {
-      queryClient.invalidateQueries(todos.all(todolistId!));
-
-      alert('Todo created!');
+      queryClient.invalidateQueries(todos.all);
     },
   });
 }
