@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { todos } from './queryKey';
+import { Todo } from '@/app/api/todos/[slug]/route';
 import { updateTodo } from '@/app/todo/apis/todo';
 import type { UpdateTodo } from '@/app/todo/apis/types';
 
@@ -8,7 +9,21 @@ export function useUpdateTodo(when: string) {
 
   return useMutation({
     mutationFn: (todo: UpdateTodo) => updateTodo(todo),
-    onSuccess: () => {
+    onMutate: async (newTodo) => {
+      await queryClient.cancelQueries(todos.detail(when));
+
+      const previousTodos = queryClient.getQueryData<Todo[]>(todos.detail(when).queryKey);
+      queryClient.setQueryData(
+        todos.detail(when).queryKey,
+        previousTodos?.map((todo) => (todo.id === newTodo.id ? newTodo : todo)),
+      );
+
+      return { previousTodos, newTodo };
+    },
+    onError: (error, newTodo, context) => {
+      queryClient.setQueryData(todos.detail(when).queryKey, context?.previousTodos);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries(todos.detail(when));
     },
   });
