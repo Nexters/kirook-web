@@ -1,67 +1,89 @@
 'use client';
 
-import { FormEvent, useCallback, useRef, useState } from 'react';
-import React from 'react';
-import { Icon } from '@/shared/components';
+import { useSearchParams } from 'next/navigation';
+import { type FocusEvent, type FormEvent, useCallback, useRef, useState } from 'react';
+import { TodoContentEditableText } from './TodoContentEditableText';
+import { useDeleteTodo } from '@/app/todo/queries/useDeleteTodo';
+import { useUpdateTodo } from '@/app/todo/queries/useUpdateTodo';
+import { Button, CheckBox, Modal } from '@/shared/components';
 
 interface TodoItemProps {
   id: string;
   isFullfilled: boolean;
   content: string;
+  createdAt: string;
 }
 
-export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
+export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps) {
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const { mutate: updateTodo } = useUpdateTodo(tab || 'today');
+  const { mutate: deleteTodo } = useDeleteTodo();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const previousContent = useRef(content);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef(content);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleClickToggle = () => {
-    // TODO: API 호출
-    // toggle에 API 호출 너무 자주 일어날려나? API 기다려야하나?
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
-  const handleClickButton = useCallback(() => {
-    if (isEditMode) {
-      const inputValue = inputRef.current?.value;
-      if (inputValue?.length === 0) return;
-
-      // TODO: 수정 로직
-
-      setIsEditMode(false);
-      return;
-    }
-
-    // TODO: 삭제 로직
-  }, [isEditMode]);
+  const toggleCheck = () => {
+    updateTodo({ id, text: textRef.current, status: !isFullfilled, createdAt });
+  };
 
   const resetInput = useCallback(() => {
-    if (!isEditMode) return;
-    if (!inputRef.current) return;
-
-    inputRef.current.value = previousContent.current;
+    textRef.current = content;
     setIsEditMode(false);
-  }, [isEditMode]);
+  }, [content]);
 
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isEditMode) return;
-  }, []);
+  const handleBlurText = (e: FocusEvent<HTMLDivElement>) => {
+    if (e.relatedTarget === buttonRef.current) return;
+    resetInput();
+  };
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      if (isEditMode) {
+        const input = textRef.current;
+        if (input.length === 0) return;
+
+        updateTodo({ id, text: input, status: isFullfilled });
+        setIsEditMode(false);
+      } else {
+        openModal();
+      }
+    },
+    [id, isFullfilled, isEditMode, openModal, updateTodo],
+  );
 
   return (
     <form className='flex w-full items-start gap-2 py-3' onSubmit={handleSubmit}>
-      <button type='button' className='flex items-center justify-center' onClick={handleClickToggle}>
-        <Icon iconType={isFullfilled ? 'CheckFilled' : 'Check'} />
-      </button>
-      <input
-        ref={inputRef}
-        className='text-body2 h-auto grow resize-none overflow-hidden bg-transparent leading-[24px] outline-none transition-colors duration-300 focus:bg-grayscale-50'
-        defaultValue={content}
-        onFocus={() => setIsEditMode(true)}
-        onBlur={resetInput}
-      />
-      <button type='button' className='text-button w-fit shrink-0 text-grayscale-700' onClick={handleClickButton}>
+      <CheckBox isChecked={isFullfilled} onClick={() => toggleCheck()} className='shrink-0' />
+      <TodoContentEditableText textRef={textRef} onFocus={() => setIsEditMode(true)} onBlur={handleBlurText} />
+      <button ref={buttonRef} type='submit' className='w-fit shrink-0 text-body1 text-grayscale-700'>
         {isEditMode ? '확인' : '삭제'}
       </button>
+      {
+        <Modal
+          isOpen={isModalOpen}
+          title='삭제하실건가요?'
+          message='삭제한 내용은 되돌릴 수 없어요'
+          firstButton={<Button onClick={() => deleteTodo(id)}>확인</Button>}
+          secondButton={
+            <Button color='secondary' onClick={() => closeModal()}>
+              취소
+            </Button>
+          }
+          close={() => closeModal()}
+        />
+      }
     </form>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { TabsContext } from './TabsContext';
 import { TabKey } from './types';
@@ -12,6 +13,8 @@ export interface TabsProps {
 
 export function Tabs({ children, initialTab, onChangeTab }: TabsProps) {
   const [activeTab, setActiveTab] = useState(initialTab);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const selectTab = useCallback((tabKey: TabKey) => {
     setActiveTab(tabKey);
@@ -19,6 +22,7 @@ export function Tabs({ children, initialTab, onChangeTab }: TabsProps) {
 
   useEffect(() => {
     onChangeTab?.(activeTab);
+    router.push(`${pathname}?tab=${activeTab}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 

@@ -6,7 +6,7 @@ import { useTabs } from './useTabs';
 import { cn } from '@/shared/utils/cn';
 
 export interface TabProps {
-  children: ReactNode;
+  children(isActive: boolean): ReactNode;
   tabKey: TabKey;
 }
 
@@ -32,7 +32,7 @@ export function Tab({ children, tabKey }: TabProps) {
         },
       )}
     >
-      {children}
+      {children(isActive)}
     </button>
   );
 }
