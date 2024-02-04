@@ -3,6 +3,7 @@ import { todos } from './queryKey';
 import { Todo } from '@/app/api/todos/[slug]/route';
 import { updateTodo } from '@/app/todo/apis/todo';
 import type { UpdateTodo } from '@/app/todo/apis/types';
+import { sortTodos } from '@/app/todo/utils/sortTodos';
 
 export function useUpdateTodo(when: string) {
   const queryClient = useQueryClient();
@@ -12,10 +13,11 @@ export function useUpdateTodo(when: string) {
     onMutate: async (newTodo) => {
       await queryClient.cancelQueries(todos.detail(when));
 
-      const previousTodos = queryClient.getQueryData<Todo[]>(todos.detail(when).queryKey);
+      const previousTodos = queryClient.getQueryData<Todo[]>(todos.detail(when).queryKey) || [];
+
       queryClient.setQueryData(
         todos.detail(when).queryKey,
-        previousTodos?.map((todo) => (todo.id === newTodo.id ? newTodo : todo)),
+        sortTodos(previousTodos.map((todo) => (todo.id === newTodo.id ? (newTodo as Todo) : todo))),
       );
 
       return { previousTodos, newTodo };

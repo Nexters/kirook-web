@@ -11,9 +11,10 @@ interface TodoItemProps {
   id: string;
   isFullfilled: boolean;
   content: string;
+  createdAt: string;
 }
 
-export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
+export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const { mutate: updateTodo } = useUpdateTodo(tab || 'today');
@@ -32,7 +33,7 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
   };
 
   const toggleCheck = () => {
-    updateTodo({ id, text: textRef.current, status: !isFullfilled });
+    updateTodo({ id, text: textRef.current, status: !isFullfilled, createdAt });
   };
 
   const resetInput = useCallback(() => {
