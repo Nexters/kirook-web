@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { todos } from './queryKey';
 import { createTodo } from '@/app/todo/apis/todo';
 
-export function useCreateTodo() {
+export function useCreateTodo(when: string) {
   const queryClient = useQueryClient();
   const [todolistId, setTodolistId] = useState<string>();
 
@@ -17,9 +17,9 @@ export function useCreateTodo() {
   }, []);
 
   return useMutation({
-    mutationFn: async (text: string) => createTodo(text, todolistId),
+    mutationFn: async (text: string) => createTodo(text, todolistId, when === 'today'),
     onSuccess: () => {
-      queryClient.invalidateQueries(todos.all);
+      queryClient.invalidateQueries(todos.detail(when));
     },
   });
 }

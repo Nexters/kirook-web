@@ -1,12 +1,15 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { ChangeEvent, useRef, useState } from 'react';
 import { useCreateTodo } from '../queries/useCreateTodo';
 import { TodoAddButton } from './TodoAddButton';
 import { cn } from '@/shared/utils/cn';
 
 export function TodoInput() {
-  const { mutate: createTodo } = useCreateTodo();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const { mutate: createTodo } = useCreateTodo(tab || 'today');
   const [input, setInput] = useState('');
   const [isInputActivated, setIsInputActivated] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,7 +36,7 @@ export function TodoInput() {
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     createTodo(input);
     resetInput();
   };

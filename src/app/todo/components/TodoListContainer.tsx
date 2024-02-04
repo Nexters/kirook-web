@@ -2,9 +2,9 @@ import { Suspense } from 'react';
 import { TodoInput } from './TodoInput';
 import { TodoList } from './TodoList';
 
-interface TodoListContainerProps {
-  // TODO: 오늘 내일 구분하는 프로퍼티 추가
-}
+// interface TodoListContainerProps {
+//   // TODO: 오늘 내일 구분하는 프로퍼티 추가
+// }
 
 export function TodoListContainer() {
   return (

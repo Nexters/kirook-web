@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { todos } from './queryKey';
 import { getTodoList } from '@/app/todo/apis/todo';
 
-export const useGetTodos = () => {
+export function useGetTodos() {
   const [todolistId, setTodolistId] = useState<string>();
 
   useEffect(() => {
@@ -19,4 +19,30 @@ export const useGetTodos = () => {
     enabled: !!todolistId,
     select: (data) => data,
   });
-};
+}
+
+export function useGetTodosV2() {
+  const [todolistId, setTodolistId] = useState<string>();
+
+  useEffect(() => {
+    const id = localStorage.getItem('todo');
+    if (!id) return;
+
+    setTodolistId(id);
+  }, []);
+
+  return useQueries({
+    queries: [
+      {
+        ...todos.detail('today'),
+        queryFn: () => getTodoList(todolistId, true),
+        enabled: !!todolistId,
+      },
+      {
+        ...todos.detail('tomorrow'),
+        queryFn: () => getTodoList(todolistId, false),
+        enabled: !!todolistId,
+      },
+    ],
+  });
+}

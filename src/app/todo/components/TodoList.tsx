@@ -2,11 +2,13 @@
 
 import { TodoItem } from './TodoItem';
 import { Todo } from '@/app/api/todos/[slug]/route';
-import { useGetTodos } from '@/app/todo/queries/useGetTodos';
 
-export function TodoList() {
-  const { data: todos } = useGetTodos();
-  const sorted = sortTodoListByIsFullfilled(todos || []);
+interface TodoListProps {
+  todos: Todo[];
+}
+
+export function TodoList({ todos }: TodoListProps) {
+  const sorted = sortTodoListByIsFullfilled(todos);
 
   return (
     <ul>
