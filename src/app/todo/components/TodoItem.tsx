@@ -1,8 +1,10 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { type FocusEvent, type FormEvent, useCallback, useRef, useState } from 'react';
 import { TodoContentEditableText } from './TodoContentEditableText';
 import { useDeleteTodo } from '@/app/todo/queries/useDeleteTodo';
+import { useUpdateTodo } from '@/app/todo/queries/useUpdateTodo';
 import { Button, CheckBox, Modal } from '@/shared/components';
 
 interface TodoItemProps {
@@ -12,6 +14,9 @@ interface TodoItemProps {
 }
 
 export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const { mutate: updateTodo } = useUpdateTodo(tab || 'today');
   const { mutate: deleteTodo } = useDeleteTodo();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -27,7 +32,7 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
   };
 
   const toggleCheck = () => {
-    // TODO: API 호출
+    updateTodo({ id, text: textRef.current, status: !isFullfilled });
   };
 
   const resetInput = useCallback(() => {
@@ -48,13 +53,13 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
         const input = textRef.current;
         if (input.length === 0) return;
 
-        // TODO: 수정 로직
+        updateTodo({ id, text: input, status: isFullfilled });
         setIsEditMode(false);
       } else {
         openModal();
       }
     },
-    [isEditMode, openModal],
+    [id, isFullfilled, isEditMode, openModal, updateTodo],
   );
 
   return (

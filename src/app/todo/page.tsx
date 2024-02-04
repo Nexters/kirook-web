@@ -13,7 +13,6 @@ export default function Todo() {
 
   return (
     <>
-      {/* {isLoading && <div className='absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-20'>로딩임니다..</div>} */}
       <div className='flex flex-col items-center px-[14px]'>
         <h1 className='mb-5 mt-[12px]'>
           <TodoLogo role='img' aria-describedby='todo-logo' />

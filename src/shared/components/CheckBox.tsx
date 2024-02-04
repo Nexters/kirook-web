@@ -5,12 +5,12 @@ interface TodoCheckBoxProps extends SVGAttributes<SVGSVGElement> {
   isChecked: boolean;
 }
 
-export function CheckBox({ isChecked, ...rest }: TodoCheckBoxProps) {
+export function CheckBox({ isChecked, className, ...rest }: TodoCheckBoxProps) {
   return (
     <svg
       role='checkbox'
       aria-checked={isChecked}
-      className='group cursor-pointer *:transition-all'
+      className={cn('group cursor-pointer *:transition-all', className)}
       width='24'
       height='23'
       viewBox='0 0 24 23'
