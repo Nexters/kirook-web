@@ -6,10 +6,14 @@ import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodosV2 } from './queries/useGetTodos';
 import { TodoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';
+import { Loading } from '@/shared/components/Loading';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 
 export default function Todo() {
-  const [{ data: todosToday }, { data: todosTomorrow }] = useGetTodosV2();
+  const [
+    { isLoading: isTodosTodayLoading, data: todosToday },
+    { isLoading: isTodosTomorrowLoading, data: todosTomorrow },
+  ] = useGetTodosV2();
 
   return (
     <>
@@ -41,6 +45,7 @@ export default function Todo() {
         </Tabs>
       </div>
       <Navigation />
+      {(isTodosTodayLoading || isTodosTomorrowLoading) && <Loading />}
     </>
   );
 }
