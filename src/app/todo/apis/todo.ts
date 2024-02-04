@@ -2,7 +2,7 @@ import type { UpdateTodo } from './types';
 import { Todo, TodoResponse } from '@/app/api/todos/[slug]/route';
 import http from '@/shared/utils/fetch';
 
-export const getTodoList = async (todolistId?: string, isToday: boolean = true) => {
+export async function getTodoList(todolistId?: string, isToday: boolean = true) {
   if (!todolistId) {
     return [];
   }
@@ -11,7 +11,7 @@ export const getTodoList = async (todolistId?: string, isToday: boolean = true) 
   const { todos } = response;
 
   return todos;
-};
+}
 
 export async function createTodo(text: string, todolistId?: string, isToday: boolean = true) {
   if (!todolistId) {
@@ -27,18 +27,14 @@ export async function createTodo(text: string, todolistId?: string, isToday: boo
 
   return response;
 }
-export async function updateTodo(accessToken: string, todo: UpdateTodo) {
-  if (!todo || !accessToken) {
+export async function updateTodo(todo: UpdateTodo) {
+  if (!todo) {
     return {} as Todo;
   }
 
   const { id, ...rest } = todo;
 
-  const response = await http.patch<Todo>(`/api/todos/todo/${id}`, rest, {
-    headers: {
-      Authorization: accessToken,
-    },
-  });
+  const response = await http.patch<Todo>(`/api/todos/todo/${id}`, rest);
 
   return response;
 }

@@ -18,32 +18,35 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   const todolistId = params.slug;
   const accessToken = request.cookies.get('accessToken')?.value;
   const url = `https://api.notion.com/v1/databases/${todolistId}/query`;
-  const req = {
-    // filter: {
-    //   and: [
-    //     {
-    //       property: 'created_at',
-    //       date: {
-    //         after: new Date(), // 오늘 00시 이후
-    //       },
-    //     },
-    //     {
-    //       property: 'created_at',
-    //       date: {
-    //         before: new Date(), // 내일 00시 이전
-    //       },
-    //     },
-    //   ],
-    // },
-  };
 
   try {
-    const response = await http.post<NotionTodoAllResponse>(url, req, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Notion-Version': '2022-06-28',
+    const response = await http.post<NotionTodoAllResponse>(
+      url,
+      {
+        filter: {
+          and: [
+            {
+              property: 'created_at',
+              date: {
+                after: new Date(), // 오늘 00시 이후
+              },
+            },
+            {
+              property: 'created_at',
+              date: {
+                before: new Date(), // 내일 00시 이전
+              },
+            },
+          ],
+        },
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Notion-Version': '2022-06-28',
+        },
+      },
+    );
 
     const todos = response.results.map<Todo>((todo) => {
       const { status, created_at: createdAt, text } = todo.properties;

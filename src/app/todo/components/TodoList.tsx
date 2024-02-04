@@ -1,8 +1,8 @@
 'use client';
 
-import { useGetTodos } from '../queries/useGetTodos';
 import { TodoItem } from './TodoItem';
 import { Todo } from '@/app/api/todos/[slug]/route';
+import { useGetTodos } from '@/app/todo/queries/useGetTodos';
 
 export function TodoList() {
   const { data: todos } = useGetTodos();

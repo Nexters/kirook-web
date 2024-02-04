@@ -15,7 +15,8 @@ export const useGetTodos = () => {
 
   return useQuery({
     ...todos.all,
-    queryFn: () => getTodoList(todolistId),
+    queryFn: () => getTodoList(todolistId, true),
     enabled: !!todolistId,
+    select: (data) => data,
   });
 };

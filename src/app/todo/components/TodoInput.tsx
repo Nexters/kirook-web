@@ -33,7 +33,7 @@ export function TodoInput() {
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    
     createTodo(input);
     resetInput();
   };

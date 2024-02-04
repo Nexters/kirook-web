@@ -14,8 +14,8 @@ async function request<Response>(url: FetchUrl, { headers, ...rest }: RequestIni
     ...rest,
   });
 
-  if (response.status !== 200) {
-    throw new Error(`status code: ${response.status} error가 발생했습니다!!`);
+  if (response.status >= 400) {
+    throw new Error(`status code: ${response.status} error가 발생했습니다`);
   }
 
   const json = await response.json();
