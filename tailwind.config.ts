@@ -10,7 +10,6 @@ const config: Config = {
         pretendard: ['var(--font-pretendard)', ...fontFamily.sans],
       },
       fontSize: {
-        // TODO: line height 배율 확정되면 추가
         header1: [
           '20px',
           {
