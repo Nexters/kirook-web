@@ -10,7 +10,6 @@ interface TodoListProps {
 
 export function TodoList({ todos }: TodoListProps) {
   const sorted = sortTodos(todos);
-  console.log(sorted);
 
   return (
     <ul>

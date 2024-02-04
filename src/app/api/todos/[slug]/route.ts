@@ -56,7 +56,6 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
 
     return NextResponse.json<TodoResponse>({ todos }, { status: 200 });
   } catch (error) {
-    console.error(error);
     return NextResponse.json(error, { status: 500 });
   }
 }

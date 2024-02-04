@@ -7,8 +7,6 @@ import http from '@/shared/utils/fetch';
 export async function PATCH(request: NextRequest, { params }: { params: { slug: string } }) {
   const todoId = params.slug;
   const body = await request.json();
-
-  console.log(body);
   const accessToken = request.cookies.get('accessToken')?.value;
   const url = `https://api.notion.com/v1/pages/${todoId}`;
 
