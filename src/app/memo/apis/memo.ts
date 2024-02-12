@@ -39,3 +39,13 @@ export const getMemoItem = async (accessToken: string, memoId: string) => {
 
   return res.data;
 };
+
+export const getTags = async (accessToken: string, memoListId: string) => {
+  const res = await axios.get(`/api/memos/tags/${memoListId}`, {
+    headers: {
+      Authorization: accessToken,
+    },
+  });
+
+  return res.data;
+};

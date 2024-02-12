@@ -29,7 +29,7 @@ const MemoItem = ({
   return (
     <>
       {/* 오늘 날짜 */}
-      <div className='text-grayscale-700 py-2 text-[0.625rem]'>{date}</div>
+      <div className='py-2 text-[0.625rem] text-grayscale-700'>{date}</div>
 
       {/* 텍스트 인풋 영역 */}
       <textarea
@@ -47,7 +47,7 @@ const MemoItem = ({
         <div className='relative'>
           <input
             placeholder='태그를 입력해주세요'
-            className='placeholder:text-grayscale-600 w-full bg-gray-50 py-2 pl-2 pr-[3.25rem] text-base font-medium'
+            className='w-full bg-gray-50 py-2 pl-2 pr-[3.25rem] text-base font-medium placeholder:text-grayscale-600'
             value={tagValue}
             onChange={onTagChange}
           />
@@ -64,7 +64,7 @@ const MemoItem = ({
           {tags.map((tag, idx) => (
             <div
               key={idx}
-              className='bg-grayscale-300 flex shrink-0 grow-0 basis-auto cursor-pointer items-center rounded-2xl px-2 py-1 text-sm text-black'
+              className='flex shrink-0 grow-0 basis-auto cursor-pointer items-center rounded-2xl bg-grayscale-300 px-2 py-1 text-sm text-black'
             >
               {tag}
               <Icon

@@ -42,7 +42,7 @@ export function TodoInput() {
       </button>
       <div className='relative flex w-full items-center gap-2'>
         <p
-          className={cn('text-body1 text-grayscale-600 absolute left-0', {
+          className={cn('absolute left-0 text-body1 text-grayscale-600', {
             hidden: isInputActivated,
           })}
         >
@@ -58,9 +58,9 @@ export function TodoInput() {
             type='text'
             value={input}
             onChange={handleInputChange}
-            className='text-body2 caret-grayscale-600 focus:shadow-input-focus grow py-[2.5px] outline-none transition-all duration-300'
+            className='grow py-[2.5px] text-body2 caret-grayscale-600 outline-none transition-all duration-300 focus:shadow-input-focus'
           />
-          <button type='submit' className='text-button text-grayscale-700 w-fit'>
+          <button type='submit' className='w-fit text-button text-grayscale-700'>
             확인
           </button>
         </div>

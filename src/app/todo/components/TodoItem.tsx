@@ -54,12 +54,12 @@ export function TodoItem({ id, isFullfilled, content }: TodoItemProps) {
       </button>
       <input
         ref={inputRef}
-        className='text-body2 h-auto grow resize-none overflow-hidden bg-transparent leading-[24px] outline-none transition-colors duration-300 focus:bg-grayscale-50'
+        className='h-auto grow resize-none overflow-hidden bg-transparent text-body2 leading-[24px] outline-none transition-colors duration-300 focus:bg-grayscale-50'
         defaultValue={content}
         onFocus={() => setIsEditMode(true)}
         onBlur={resetInput}
       />
-      <button type='button' className='text-button w-fit shrink-0 text-grayscale-700' onClick={handleClickButton}>
+      <button type='button' className='w-fit shrink-0 text-button text-grayscale-700' onClick={handleClickButton}>
         {isEditMode ? '확인' : '삭제'}
       </button>
     </form>

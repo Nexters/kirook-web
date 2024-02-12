@@ -10,7 +10,6 @@
   "bracketSameLine": false,
   "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
   "tailwindFunctions": ["clsx", "classnames", "cva", "cn", "twMerge", "tv"],
-  "pluginSearchDirs": false,
   "importOrder": ["^next", "^react", "^@[^/]+/(.*)$", "<THIRD_PARTY_MODULES>", "^~"],
   "importOrderSortSpecifiers": true
 }

@@ -32,7 +32,7 @@ const config: Config = {
         title3: [
           '1rem',
           {
-            fontWeight: '600',
+            fontWeight: '500',
           },
         ],
         body1: [

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import MemoItem from '../../components/MemoItem';
 import useStore from '../../hooks/useStore';
@@ -10,6 +10,7 @@ import { Icon, Navigation } from '@/shared/components';
 import dayjs from 'dayjs';
 
 export default function MemoWritePage() {
+  const router = useRouter();
   const params = useParams();
   const { memo, isLoading, fetchMemo } = useStore();
 
@@ -44,8 +45,8 @@ export default function MemoWritePage() {
       <div className='flex h-screen w-full flex-col bg-white px-4'>
         {/* MEMO 로고 */}
         <div className='mb-5 mt-[11px] flex items-center justify-between'>
-          <Icon iconType='ChevronLeft' className='fill-none' />
-          <Image src={MemoLogo} alt='memoTab_logoImage' />
+          <Icon iconType='ChevronLeft' className='fill-none' onClick={router.back} />
+          <Image src={MemoLogo} alt='memoTab_logoImage' onClick={() => router.push('/memo')} />
           <button className='bg-transparent text-base text-[#5ED236]' disabled>
             저장
           </button>

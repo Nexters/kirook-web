@@ -17,12 +17,19 @@ const MemoPreview = ({ title, createdAt, tags, className, onClick }: MemoPreview
     >
       <h4 className='truncate font-bold'>{title}</h4>
       <p className='text-xs text-grayscale-500'>{formattedDate}</p>
-      <div className='no-scrollbar flex flex-nowrap justify-between gap-1 overflow-x-scroll'>
-        {tags?.map((tag, idx) => (
-          <div key={idx} className='shrink-0 grow-0 basis-auto rounded-2xl bg-grayscale-300 px-2 py-1 text-[0.625rem]'>
-            {`#${tag.name}`}
-          </div>
-        ))}
+      <div className='flex flex-nowrap gap-1'>
+        {tags.length > 0 && (
+          <>
+            <div className='shrink-0 grow-0 basis-auto rounded-lg bg-grayscale-300 px-2 py-1 text-[0.625rem]'>
+              {`#${tags[0].name}`}
+            </div>
+            {tags.length > 1 && (
+              <div className='shrink-0 grow-0 basis-auto rounded-xl bg-grayscale-100 px-2 py-1 text-[0.625rem]'>
+                {`+${tags.length - 1}`}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
