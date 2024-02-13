@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useAutosizeTextArea from '../hooks/useAutosizeTextArea';
 import TagColorDropdown from './TagColorDropdown';
 import { MultiSelectOption } from '@/app/api/memos/[memoListId]/interface';
@@ -28,12 +28,24 @@ const MemoItem = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [color, setColor] = useState<string>('gray');
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   useAutosizeTextArea(textAreaRef.current, value);
 
   const onClickAdd = () => {
     handleAdd?.(color);
     setColor('gray');
   };
+
+  useEffect(() => {
+    const handleOutsideClose = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (!dropdownRef?.current) return;
+      if (isOpen && !dropdownRef.current.contains(target)) setIsOpen(false);
+    };
+    document.addEventListener('click', handleOutsideClose);
+
+    return () => document.removeEventListener('click', handleOutsideClose);
+  }, [isOpen, dropdownRef]);
 
   return (
     <>
@@ -77,6 +89,7 @@ const MemoItem = ({
               setColor={setColor}
               className='absolute right-4 top-9'
               setIsOpen={setIsOpen}
+              ref={dropdownRef}
             />
           )}
         </div>

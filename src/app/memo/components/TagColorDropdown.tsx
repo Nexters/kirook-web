@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { cn } from '@/shared/utils/cn';
 
 interface DropdownProps {
@@ -9,16 +9,17 @@ interface DropdownProps {
 }
 
 const colors = [
-  { name: '회색', value: 'gray', color: '#e5e5ef' },
-  { name: '빨간색', value: 'red', color: '#ffe0e0' },
-  { name: '노란색', value: 'yellow', color: '#FFF0D4' },
-  { name: '초록색', value: 'green', color: '#D4F1E0' },
-  { name: '파란색', value: 'blue', color: '#E1EDFF' },
-  { name: '보라색', value: 'purple', color: '#EBDFFF' },
-  { name: '분홍색', value: 'pink', color: '#FFE4F9' },
+  { name: '회색', value: 'gray' },
+  { name: '빨간색', value: 'red' },
+  { name: '노란색', value: 'yellow' },
+  { name: '초록색', value: 'green' },
+  { name: '파란색', value: 'blue' },
+  { name: '보라색', value: 'purple' },
+  { name: '분홍색', value: 'pink' },
 ];
 
-const TagColorDropdown = ({ color, setColor, setIsOpen, className }: DropdownProps) => {
+// eslint-disable-next-line react/display-name
+const TagColorDropdown = forwardRef<HTMLDivElement, DropdownProps>(({ color, setColor, setIsOpen, className }, ref) => {
   const handleClick = (color: string) => {
     setColor(color);
     setIsOpen(false);
@@ -27,6 +28,7 @@ const TagColorDropdown = ({ color, setColor, setIsOpen, className }: DropdownPro
     <div className={cn('w-[10rem] flex-col gap-[0.125rem] rounded bg-white py-1 shadow-2xl', className)}>
       {colors.map((item) => (
         <div
+          ref={ref}
           key={item.value}
           className={cn('flex gap-2 bg-black px-2 py-1', { 'bg-white': !(item.value === color) })}
           onClick={() => handleClick(item.value)}
@@ -43,6 +45,6 @@ const TagColorDropdown = ({ color, setColor, setIsOpen, className }: DropdownPro
       ))}
     </div>
   );
-};
+});
 
 export default TagColorDropdown;
