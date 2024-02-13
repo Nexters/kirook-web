@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { createMemo } from '../apis/memo';
 import MemoItem from '../components/MemoItem';
+import { MultiSelectOption } from '@/app/api/memos/[memoListId]/interface';
 import { MemoLogo } from '@/assets/logo';
 import { Icon, Navigation } from '@/shared/components';
 import dayjs from 'dayjs';
@@ -13,7 +14,7 @@ export default function MemoWritePage() {
   const router = useRouter();
   const [value, setValue] = useState<string>('');
   const [tagValue, setTagValue] = useState<string>('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<MultiSelectOption[]>([]);
   const [token, setToken] = useState('');
   const [memoListId, setId] = useState('');
 
@@ -25,19 +26,19 @@ export default function MemoWritePage() {
     setState(val);
   };
 
-  const handleAdd = () => {
-    setTags((prev) => [tagValue, ...prev]);
+  const handleAdd = (color: string = 'gray') => {
+    setTags((prev) => [{ name: tagValue, color }, ...prev]);
     setTagValue('');
   };
 
   const handleDelete = (tag: string) => {
-    const filteredTags = tags.filter((val) => val !== tag);
+    const filteredTags = tags.filter((val) => val.name !== tag);
     setTags(filteredTags);
   };
 
   const handlePost = async () => {
     const res = await createMemo(token, memoListId, {
-      tags: tags.map((t) => ({ color: 'gray', name: t })),
+      tags,
       title: '제목입니다',
       text: value,
     });

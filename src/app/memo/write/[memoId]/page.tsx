@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import MemoItem from '../../components/MemoItem';
 import useStore from '../../hooks/useStore';
+import { MultiSelectOption } from '@/app/api/memos/[memoListId]/interface';
 import { MemoLogo } from '@/assets/logo';
 import { Icon, Navigation } from '@/shared/components';
 import dayjs from 'dayjs';
@@ -16,7 +17,7 @@ export default function MemoWritePage() {
 
   const [value, setValue] = useState<string>('');
   const [tagValue, setTagValue] = useState<string>('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<MultiSelectOption[]>([]);
 
   const handleChange = (
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -35,7 +36,7 @@ export default function MemoWritePage() {
   }, [fetchMemo, params.memoId]);
 
   useEffect(() => {
-    const tags = memo.tags.map((tag) => tag.name) || [];
+    const tags = memo.tags || [];
     setValue(memo.text);
     setTags(tags);
   }, [memo]);

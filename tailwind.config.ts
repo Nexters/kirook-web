@@ -64,7 +64,15 @@ const config: Config = {
         'input-focus': 'inset 0 -2px 0 #FD0000',
       },
       colors: {
+        'tag-gray': '#E5E5EF',
+        'tag-red': '#FFE0E0',
+        'tag-yellow': '#FFF0D4',
+        'tag-green': '#D4F1E0',
+        'tag-blue': '#E1EDFF',
+        'tag-pink': '#FFE4F9',
+        'tag-purple': '#EBDFFF',
         grayscale: {
+          0: '#E5E5EF',
           50: '#F7F7FA',
           100: '#F0F0F5',
           200: '#E8E8EE',
@@ -81,6 +89,11 @@ const config: Config = {
     },
     plugins: [],
   },
+  safelist: [
+    {
+      pattern: /bg-(tag-gray|tag-red|tag-blue|tag-yellow|tag-green|tag-pink|tag-purple|black|white)/,
+    },
+  ],
 };
 
 export default config;
