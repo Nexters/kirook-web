@@ -37,10 +37,13 @@ export default function MemoWritePage() {
   };
 
   const handlePost = async () => {
+    const [title, ...values] = value.split('\n');
+    const text = values.join('\n');
+
     const res = await createMemo(token, memoListId, {
       tags,
-      title: '제목입니다',
-      text: value,
+      title,
+      text,
     });
     console.log(res);
 

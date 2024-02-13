@@ -56,7 +56,7 @@ export default function Memo() {
                 key={idx}
                 className={cn(
                   'shrink-0 grow-0 basis-auto cursor-pointer rounded-2xl px-2 py-1 text-sm',
-                  selectedTag.name === tag.name ? 'bg-black text-white' : 'bg-grayscale-300 text-black',
+                  selectedTag.name === tag.name ? 'bg-black text-white' : `bg-tag-${tag.color} text-black`,
                 )}
                 onClick={() => {
                   setSelectedTag(tag);

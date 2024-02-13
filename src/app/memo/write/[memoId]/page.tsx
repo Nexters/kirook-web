@@ -37,7 +37,7 @@ export default function MemoWritePage() {
 
   useEffect(() => {
     const tags = memo.tags || [];
-    setValue(memo.text);
+    setValue(`${memo.title}\n${memo.text}`);
     setTags(tags);
   }, [memo]);
 

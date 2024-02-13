@@ -47,7 +47,6 @@ const MemoItem = ({
         rows={1}
         value={value}
         onChange={onTextChange}
-        // onKeyDown={handleKeyDown}
       />
 
       {/* 태그 영역 */}
