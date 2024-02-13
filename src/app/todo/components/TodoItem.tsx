@@ -67,7 +67,7 @@ export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps
     <form className='flex w-full items-start gap-2 py-3' onSubmit={handleSubmit}>
       <CheckBox isChecked={isFullfilled} onClick={() => toggleCheck()} className='shrink-0' />
       <TodoContentEditableText textRef={textRef} onFocus={() => setIsEditMode(true)} onBlur={handleBlurText} />
-      <button ref={buttonRef} type='submit' className='w-fit shrink-0 text-body1 text-grayscale-700'>
+      <button ref={buttonRef} type='submit' className='text-body1 text-grayscale-700 w-fit shrink-0'>
         {isEditMode ? '확인' : '삭제'}
       </button>
       {

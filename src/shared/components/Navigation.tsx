@@ -20,7 +20,7 @@ const NavButton = ({
   className?: string;
 }) => {
   const pathname = usePathname();
-  const isActive = pathname === path;
+  const isActive = pathname.startsWith(path);
 
   return (
     <Link href={path}>
