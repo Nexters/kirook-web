@@ -1,55 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Todo } from '../../[slug]/route';
-import { NotionTodo } from '../../interfaces';
-import axios, { AxiosError } from 'axios';
+import { Todo } from '@/app/api/todos/[slug]/route';
+import { NotionTodo } from '@/app/api/todos/interfaces';
+import http from '@/shared/utils/fetch';
 
 // Update Todo
-export async function PATCH(request: Request, { params }: { params: { slug: string } }) {
-  const slug = params.slug;
+export async function PATCH(request: NextRequest, { params }: { params: { slug: string } }) {
+  const todoId = params.slug;
   const body = await request.json();
-
-  const accessToken = request.headers.get('Authorization');
-  const url = `https://api.notion.com/v1/pages/${slug}`;
+  const accessToken = request.cookies.get('accessToken')?.value;
+  const url = `https://api.notion.com/v1/pages/${todoId}`;
 
   const data = {
     properties: {
-      ...body,
+      status: {
+        type: 'checkbox',
+        checkbox: body.status,
+      },
+      text: {
+        type: 'title',
+        title: [
+          {
+            type: 'text',
+            text: {
+              content: body.text,
+              link: null,
+            },
+            annotations: {
+              bold: false,
+              italic: false,
+              strikethrough: false,
+              underline: false,
+              code: false,
+              color: 'default',
+            },
+            plain_text: body.text,
+            href: null,
+          },
+        ],
+      },
     },
   };
 
   try {
-    const res = await axios.post<NotionTodo>(url, data, {
+    const response = await http.patch<NotionTodo>(url, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Notion-Version': '2022-06-28',
       },
     });
-    if (res.status === 200) {
-      const { id, properties } = res.data;
-      return NextResponse.json<Todo>({
+
+    const { id, properties } = response;
+    return NextResponse.json<Todo>(
+      {
         id,
         text: properties.text.title[0].plain_text,
         createdAt: properties.created_at.date.start,
         status: properties.status.checkbox,
-      });
-    } else {
-      return new Response('request failed', { status: 500 });
-    }
-  } catch (e) {
-    const error = e as AxiosError;
-    return new Response(error.message, {
-      status: error.status,
-    });
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    return NextResponse.json(error, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
-  const slug = params.slug;
-  const url = `https://api.notion.com/v1/pages/${slug}`;
+  const todoId = params.slug;
+  const url = `https://api.notion.com/v1/pages/${todoId}`;
+  const accessToken = request.cookies.get('accessToken')?.value;
 
-  const accessToken = request.headers.get('Authorization');
   try {
-    const resp = await axios.patch(
+    const response = await http.patch(
       url,
       {
         archived: true,
@@ -62,15 +83,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { slug:
       },
     );
 
-    if (resp.status === 200) {
-      return NextResponse.json({ message: 'ok' });
-    } else {
-      return new Response('request failed', { status: resp.status });
-    }
-  } catch (e) {
-    const error = e as AxiosError;
-    return new Response(error.message, {
-      status: error.status,
-    });
+    return NextResponse.json({ message: 'ok', response });
+  } catch (error) {
+    return NextResponse.json(error, { status: 500 });
   }
 }

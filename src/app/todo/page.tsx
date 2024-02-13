@@ -1,37 +1,51 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { TodoListContainer } from './components/TodoListContainer';
+import { TodoInput } from './components/TodoInput';
+import { TodoList } from './components/TodoList';
+import { TodoTabLabel } from './components/TodoTabLabel';
+import { useGetTodosV2 } from './queries/useGetTodos';
+import { TodoLogo } from '@/assets/logo';
 import { Navigation } from '@/shared/components';
+import { Loading } from '@/shared/components/Loading';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 
 export default function Todo() {
-  const [db, setDB] = useState('');
-  const [token, setToken] = useState('');
-  useEffect(() => {
-    const db = localStorage.getItem('todo') || '';
-    const token = localStorage.getItem('accessToken') || '';
-    setDB(db);
-    setToken(token);
-  }, []);
+  const [
+    { isLoading: isTodosTodayLoading, data: todosToday },
+    { isLoading: isTodosTomorrowLoading, data: todosTomorrow },
+  ] = useGetTodosV2();
+
   return (
     <>
       <div className='flex flex-col items-center px-[14px]'>
-        <h1 className='mb-5 mt-[11px] text-xl font-bold'>To Do</h1>
+        <h1 className='mb-5 mt-[12px]'>
+          <TodoLogo role='img' aria-describedby='todo-logo' />
+        </h1>
         <Tabs initialTab='today'>
           <TabList>
-            <Tab tabKey='today'>오늘</Tab>
-            <Tab tabKey='tomorrow'>내일</Tab>
+            <Tab tabKey='today'>
+              {(isActive) => <TodoTabLabel label='오늘' todoCount={todosToday?.length} isActive={isActive} />}
+            </Tab>
+            <Tab tabKey='tomorrow'>
+              {(isActive) => <TodoTabLabel label='내일' todoCount={todosTomorrow?.length} isActive={isActive} />}
+            </Tab>
           </TabList>
           <TabPanel tabKey='today'>
-            <TodoListContainer db={db} accessToken={token} />
+            <div className='mt-[18px] flex w-full flex-col'>
+              <TodoInput />
+              {todosToday && <TodoList todos={todosToday} />}
+            </div>
           </TabPanel>
           <TabPanel tabKey='tomorrow'>
-            <TodoListContainer db={db} accessToken={token} />
+            <div className='mt-[18px] flex w-full flex-col'>
+              <TodoInput />
+              {todosTomorrow && <TodoList todos={todosTomorrow} />}
+            </div>
           </TabPanel>
         </Tabs>
       </div>
       <Navigation />
+      {(isTodosTodayLoading || isTodosTomorrowLoading) && <Loading />}
     </>
   );
 }

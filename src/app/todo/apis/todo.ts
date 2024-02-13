@@ -1,74 +1,46 @@
-import { Todo, TodoResponse } from '../../api/todos/[slug]/route';
-import { mockTodoResponse } from './mock_todo';
-import type { TodoListItem, UpdateTodo } from './types';
-import axios from 'axios';
+import type { UpdateTodo } from './types';
+import { Todo, TodoResponse } from '@/app/api/todos/[slug]/route';
+import http from '@/shared/utils/fetch';
 
-// TODO: 오늘 내일 구분 필요
-export async function getTodoList(accessToken: string, todolistId: string, isToday: boolean = true): Promise<Todo[]> {
-  if (!todolistId || !accessToken) {
+export async function getTodoList(todolistId?: string, isToday: boolean = true) {
+  if (!todolistId) {
     return [];
   }
-
   const url = isToday ? `/api/todos/today/${todolistId}` : `/api/todos/tomorrow/${todolistId}`;
-
-  const res = await axios.get<TodoResponse>(url, {
-    headers: {
-      Authorization: accessToken,
-    },
-  });
-  const { todos } = res.data;
+  const response = await http.get<TodoResponse>(url);
+  const { todos } = response;
 
   return todos;
 }
 
-export async function createTodo(
-  accessToken: string,
-  todolistId: string,
-  text: string,
-  isToday: boolean = true,
-): Promise<Todo> {
-  const created_at = new Date();
-  if (!todolistId || !accessToken) {
+export async function createTodo(text: string, todolistId?: string, isToday: boolean = true) {
+  if (!todolistId) {
     return {} as Todo;
   }
 
   const url = isToday ? `/api/todos/today/${todolistId}` : `/api/todos/tomorrow/${todolistId}`;
-  const res = await axios.post<Todo>(
-    url,
-    {
-      created_at,
-      status: false,
-      text,
-    },
-    {
-      headers: {
-        Authorization: accessToken,
-      },
-    },
-  );
-  return res.data;
+  const response = await http.post<Todo>(url, {
+    created_at: new Date(),
+    status: false,
+    text,
+  });
+
+  return response;
 }
-export async function updateTodo(accessToken: string, todo: UpdateTodo): Promise<Todo> {
-  if (!todo || !accessToken) {
+export async function updateTodo(todo: UpdateTodo) {
+  if (!todo) {
     return {} as Todo;
   }
 
   const { id, ...rest } = todo;
 
-  const res = await axios.post<Todo>(`/api/todos/todo/${id}`, rest, {
-    headers: {
-      Authorization: accessToken,
-    },
-  });
-  return res.data;
+  const response = await http.patch<Todo>(`/api/todos/todo/${id}`, rest);
+
+  return response;
 }
 
-export const deleteTodo = async (accessToken: string, todoId: string) => {
-  const res = await axios.delete(`/api/todos/todo/${todoId}`, {
-    headers: {
-      Authorization: accessToken,
-    },
-  });
+export async function deleteTodo(todoId: string) {
+  const response = await http.delete(`/api/todos/todo/${todoId}`, {});
 
-  return res.data;
-};
+  return response;
+}

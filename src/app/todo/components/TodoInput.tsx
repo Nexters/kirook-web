@@ -1,30 +1,20 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { ChangeEvent, useRef, useState } from 'react';
-import { createTodo } from '../apis/todo';
-import { Icon } from '@/shared/components';
+import { useCreateTodo } from '../queries/useCreateTodo';
+import { TodoAddButton } from './TodoAddButton';
 import { cn } from '@/shared/utils/cn';
 
 export function TodoInput() {
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const { mutate: createTodo } = useCreateTodo(tab || 'today');
   const [input, setInput] = useState('');
   const [isInputActivated, setIsInputActivated] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
-
-  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // TODO: todo 추가하는 API 연동
-    const accessToken = localStorage.getItem('accessToken') || '';
-    const dbId = localStorage.getItem('todo') || '';
-    const res = await createTodo(accessToken, dbId, input);
-
-    alert(res.text); // TODO 생성 성공시 액션..
-  };
-
-  const handleInputToggleButtonClick = () => {
+  const toggleTodoInput = () => {
     setIsInputActivated(!isInputActivated);
 
     if (isInputActivated) {
@@ -35,21 +25,35 @@ export function TodoInput() {
     }
   };
 
+  const resetInput = () => {
+    setIsInputActivated(false);
+    setInput('');
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    createTodo(input);
+    resetInput();
+  };
+
   return (
     <form className='flex w-full items-center gap-2 py-3' onSubmit={handleSubmit}>
-      <button type='button' className='flex items-center justify-center' onClick={handleInputToggleButtonClick}>
-        <Icon iconType={isInputActivated ? 'XCircle' : 'Add'} />
-      </button>
+      <TodoAddButton isInputActivated={isInputActivated} onClick={() => toggleTodoInput()} />
       <div className='relative flex w-full items-center gap-2'>
         <p
-          className={cn('absolute left-0 text-body1 text-grayscale-600', {
+          className={cn('text-title3 text-grayscale-600 absolute left-0', {
             hidden: isInputActivated,
           })}
         >
           눌러서 추가하기
         </p>
         <div
-          className={cn('flex w-full items-center gap-2', {
+          className={cn('flex w-full items-center gap-3', {
             'opacity-0': !isInputActivated,
           })}
         >
@@ -58,9 +62,10 @@ export function TodoInput() {
             type='text'
             value={input}
             onChange={handleInputChange}
-            className='grow py-[2.5px] text-body2 caret-grayscale-600 outline-none transition-all duration-300 focus:shadow-input-focus'
+            onBlur={() => resetInput()}
+            className='text-title3 caret-grayscale-600 focus:bg-grayscale-100 grow rounded-sm p-0.5 outline-none transition-all duration-300'
           />
-          <button type='submit' className='w-fit text-button text-grayscale-700'>
+          <button type='submit' className='text-body1 text-grayscale-700 w-fit'>
             확인
           </button>
         </div>
