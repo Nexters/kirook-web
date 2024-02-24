@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
-import { pretendard } from '@/styles/fonts';
+import { changwonDangamAsac, pretendard } from '@/styles/fonts';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='ko' className={`${pretendard.variable}`}>
+    <html lang='ko' className={`${pretendard.variable} ${changwonDangamAsac.variable}`}>
       <head>
         <title>Kirook - 끼룩으로 스마트한 일상관리</title>
         <meta name='title' content='Kirook' />
