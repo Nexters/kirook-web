@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { KirookLogo, NotionLogo } from '@/assets/logo';
+import SimpleSlider from '@/shared/components/carousel';
 
 export default function Home() {
   useEffect(() => {
@@ -23,10 +24,15 @@ export default function Home() {
       localStorage.setItem('link', link);
     }
   }, []);
+
   return (
     <main>
-      <div className='flex h-screen flex-col items-center justify-around'>
-        <Image src={KirookLogo} alt='service logo' />
+      <div className='mb-12 w-full pt-6'>
+        <SimpleSlider />
+      </div>
+      <div className='flex flex-col items-center justify-around'>
+        {/* <Image src={KirookLogo} alt='service logo' className='w-full' /> */}
+        {/* <img src='landing01.png' alt='intro' /> */}
         <button className='rounded-lg bg-black px-14 py-4 text-white'>
           <a href={process.env.NEXT_PUBLIC_AUTH_URL}>
             <div className='flex gap-2'>
