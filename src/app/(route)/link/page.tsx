@@ -2,6 +2,7 @@
 
 import { LinkCreateForm } from './components/LinkCreateForm';
 import { LinkInput } from './components/LinkInput';
+import { LinkItem } from './components/LinkItem';
 import { TagFilter } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
 
@@ -43,6 +44,11 @@ export default function LinkPage() {
             </button>
           </div>
         </div>
+        <LinkItem
+          title='title'
+          createdAt={new Date()}
+          content='sdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsldsdjskdjlsdjlsjdlsjdljsldjsld'
+        />
         <div className='flex grow flex-col items-center overflow-y-scroll bg-grayscale-50'>
           <p className='mt-[158px] text-title3 text-grayscale-700'>아직 스크랩한 링크가 없어요</p>
         </div>
