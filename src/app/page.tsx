@@ -23,6 +23,7 @@ export default function Home() {
       localStorage.setItem('link', link);
     }
   }, []);
+
   return (
     <main>
       <div className='flex h-screen flex-col items-center justify-around'>

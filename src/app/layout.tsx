@@ -11,7 +11,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='ko' className={`${pretendard.variable}`}>
-      <head />
+      <head>
+        <title>끼룩</title>
+        <meta name='title' content='끼룩 Kirook' />
+        <meta name='description' content='투두, 메모, 링크 스크랩을 모두 제공하는 개인 생산성 슈퍼 앱' />
+        <meta
+          name='keywords'
+          content='링크 스크랩, 투두, 투두리스트, 할일, 메모, 자기관리, 개인 생산성, link scrape, todo, memo, personal productivity, self management'
+        />
+        <meta property='og:title' content='끼룩 Kirook' />
+        <meta property='og:description' content='투두, 메모, 링크 스크랩을 모두 제공하는 개인 생산성 슈퍼 앱' />
+        <meta property='og:image' content='https://kirook.vercel.app/main.png' />
+        <meta property='og:url' content='https://kirook.vercel.app' />
+      </head>
       <body className={`${pretendard.className}`}>
         <QueryProvider>
           {children}
