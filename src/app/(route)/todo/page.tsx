@@ -5,11 +5,10 @@ import { TodoList } from './components/TodoList';
 import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodosV2 } from './queries/useGetTodos';
 import { TodoLogo } from '@/assets/logo';
-import { Navigation } from '@/shared/components';
 import { Loading } from '@/shared/components/Loading';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 
-export default function Todo() {
+export default function TodoPage() {
   const [
     { isLoading: isTodosTodayLoading, data: todosToday },
     { isLoading: isTodosTomorrowLoading, data: todosTomorrow },
@@ -44,7 +43,6 @@ export default function Todo() {
           </TabPanel>
         </Tabs>
       </div>
-      <Navigation />
       {(isTodosTodayLoading || isTodosTomorrowLoading) && <Loading />}
     </>
   );

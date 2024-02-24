@@ -1,4 +1,4 @@
-import { Memo, MultiSelectOption } from '../../api/memos/[memoListId]/interface';
+import { Memo, MultiSelectOption } from '../../../api/memos/[memoListId]/interface';
 import { fetchMemoes, getMemoItem, getTags } from '../apis/memo';
 import { create } from 'zustand';
 

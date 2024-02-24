@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { todos } from './queryKey';
+import { getTodoList } from '@/app/(route)/todo/apis/todo';
+import { sortTodos } from '@/app/(route)/todo/utils/sortTodos';
 import { Todo } from '@/app/api/todos/[slug]/route';
-import { getTodoList } from '@/app/todo/apis/todo';
-import { sortTodos } from '@/app/todo/utils/sortTodos';
 
 export function useGetTodos() {
   const [todolistId, setTodolistId] = useState<string>();

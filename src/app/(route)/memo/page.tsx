@@ -2,10 +2,9 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import {Memo, MultiSelectOption } from '../api/memos/[memoListId]/interface';
+import {Memo, MultiSelectOption } from '../../api/memos/[memoListId]/interface';
 import MemoPreview from './components/MemoPreview';
 import { MemoLogo } from '@/assets/logo';
-import { Navigation } from '@/shared/components';
 import { cn } from '@/shared/utils/cn';
 import useStore from './hooks/useStore';
 import { useRouter } from 'next/navigation';
@@ -41,7 +40,6 @@ export default function Memo() {
   },[memos, selectedTag])
 
   return (
-    <>
       <div className='bg-grayscale-50 flex h-screen w-full flex-col'>
         <div className='bg-white'>
           {/* MEMO 로고 */}
@@ -109,7 +107,5 @@ export default function Memo() {
           onClick={()=>router.push('/memo/write')} 
           className="absolute bottom-[7rem] right-[1rem] flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-black shadow-lg shadow-grayscale-500"/>
       </div>
-      <Navigation />
-    </>
   );
 }

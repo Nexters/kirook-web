@@ -1,8 +1,8 @@
 'use client';
 
 import { TodoItem } from './TodoItem';
+import { sortTodos } from '@/app/(route)/todo/utils/sortTodos';
 import { Todo } from '@/app/api/todos/[slug]/route';
-import { sortTodos } from '@/app/todo/utils/sortTodos';
 
 interface TodoListProps {
   todos: Todo[];
