@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { TodoInput } from './components/TodoInput';
 import { TodoList } from './components/TodoList';
 import { TodoTabLabel } from './components/TodoTabLabel';
@@ -8,7 +9,7 @@ import { Loading, Portal } from '@/shared/components';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 import { Header } from '@/shared/components/layout/Header';
 
-export default function TodoPage() {
+const TodoPage = () => {
   const [
     { isLoading: isTodosTodayLoading, data: todosToday },
     { isLoading: isTodosTomorrowLoading, data: todosTomorrow },
@@ -48,4 +49,6 @@ export default function TodoPage() {
       )}
     </>
   );
-}
+};
+
+export default dynamic(() => Promise.resolve(TodoPage), { ssr: false });
