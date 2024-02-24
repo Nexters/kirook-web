@@ -5,6 +5,7 @@ import { TodoList } from './components/TodoList';
 import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodosV2 } from './queries/useGetTodos';
 import { TodoLogo } from '@/assets/logo';
+import { Portal } from '@/shared/components';
 import { Loading } from '@/shared/components/Loading';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 
@@ -43,7 +44,11 @@ export default function TodoPage() {
           </TabPanel>
         </Tabs>
       </div>
-      {(isTodosTodayLoading || isTodosTomorrowLoading) && <Loading />}
+      {(isTodosTodayLoading || isTodosTomorrowLoading) && (
+        <Portal targetRoot='loading-root'>
+          <Loading />
+        </Portal>
+      )}
     </>
   );
 }

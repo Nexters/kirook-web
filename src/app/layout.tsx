@@ -30,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <QueryProvider>
           {children}
           <div id='modal-root' />
+          <div id='loading-root' />
         </QueryProvider>
       </body>
     </html>
