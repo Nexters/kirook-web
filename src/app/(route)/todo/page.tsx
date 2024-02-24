@@ -4,8 +4,7 @@ import { TodoInput } from './components/TodoInput';
 import { TodoList } from './components/TodoList';
 import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodosV2 } from './queries/useGetTodos';
-import { Portal } from '@/shared/components';
-import { Loading } from '@/shared/components/Loading';
+import { Loading, Portal } from '@/shared/components';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
 import { Header } from '@/shared/components/layout/Header';
 
@@ -44,7 +43,7 @@ export default function TodoPage() {
       </div>
       {(isTodosTodayLoading || isTodosTomorrowLoading) && (
         <Portal targetRoot='loading-root'>
-          <Loading />
+          <Loading type='fetching' />
         </Portal>
       )}
     </>
