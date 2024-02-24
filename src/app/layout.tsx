@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { pretendard } from '@/styles/fonts';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
 
 export const metadata: Metadata = {
   title: 'Kirook',
