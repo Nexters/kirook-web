@@ -4,10 +4,10 @@ import { TodoInput } from './components/TodoInput';
 import { TodoList } from './components/TodoList';
 import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodosV2 } from './queries/useGetTodos';
-import { TodoLogo } from '@/assets/logo';
 import { Portal } from '@/shared/components';
 import { Loading } from '@/shared/components/Loading';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/Tabs';
+import { Header } from '@/shared/components/layout/Header';
 
 export default function TodoPage() {
   const [
@@ -17,10 +17,8 @@ export default function TodoPage() {
 
   return (
     <>
+      <Header logoText='Todo' showBackButton />
       <div className='flex flex-col items-center px-[14px]'>
-        <h1 className='mb-5 mt-[12px]'>
-          <TodoLogo role='img' aria-describedby='todo-logo' />
-        </h1>
         <Tabs initialTab='today'>
           <TabList>
             <Tab tabKey='today'>

@@ -1,14 +1,13 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import {Memo, MultiSelectOption } from '../../api/memos/[memoListId]/interface';
 import MemoPreview from './components/MemoPreview';
-import { MemoLogo } from '@/assets/logo';
 import { cn } from '@/shared/utils/cn';
 import useStore from './hooks/useStore';
 import { useRouter } from 'next/navigation';
 import { MemoAddButton } from './components/MemoAddButton';
+import { Header } from '@/shared/components/layout/Header';
 
 export default function Memo() {
   const router = useRouter();
@@ -42,10 +41,7 @@ export default function Memo() {
   return (
       <div className='bg-grayscale-50 flex h-screen w-full flex-col'>
         <div className='bg-white'>
-          {/* MEMO 로고 */}
-          <div className='mb-5 mt-[11px] flex justify-center'>
-            <Image src={MemoLogo} alt='memoTab_logoImage' onClick={router.refresh} />
-          </div>
+        <Header logoText='Memo' showBackButton />
 
           {/* MEMO 태그 필터 */}
           <div className='no-scrollbar ml-4 flex flex-nowrap gap-2 overflow-x-scroll py-2'>

@@ -5,3 +5,4 @@ export * from './Button';
 export * from './CheckBox';
 export * from './Portal';
 export * from './Modal';
+export * from './LogoText';

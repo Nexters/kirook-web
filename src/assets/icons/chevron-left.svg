@@ -1,8 +1,8 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 <g id="chevron-left">
 <g id="Icon">
-<path d="M14.7 5.7L8.09998 12L14.7 18.3" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.7 5.7L8.09998 12L14.7 18.3" stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.7 5.7L8.09998 12L14.7 18.3" stroke="inherit" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<path d="M14.7 5.7L8.09998 12L14.7 18.3" stroke="inherit" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </g>
 </g>
 </svg>
