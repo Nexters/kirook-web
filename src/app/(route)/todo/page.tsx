@@ -17,7 +17,7 @@ const TodoPage = () => {
 
   return (
     <>
-      <Header logoText='Todo' showBackButton />
+      <Header logoText='Todo' />
       <div className='flex flex-col items-center px-[14px]'>
         <Tabs initialTab='today'>
           <TabList>

@@ -41,7 +41,7 @@ export default function Memo() {
   return (
       <div className='bg-grayscale-50 flex h-screen w-full flex-col'>
         <div className='bg-white'>
-        <Header logoText='Memo' showBackButton />
+        <Header logoText='Memo' />
 
           {/* MEMO 태그 필터 */}
           <div className='no-scrollbar ml-4 flex flex-nowrap gap-2 overflow-x-scroll py-2'>
