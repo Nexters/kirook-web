@@ -21,7 +21,11 @@ export async function createLink(
   return response;
 }
 
-export async function deleteLink() {}
+export async function deleteLink(linkId: string) {
+  const response = await http.delete(`/api/links/link/${linkId}`, {});
+
+  return response;
+}
 
 export async function scrapLink(url: string) {
   const response = await http.post<LinkPreviewResponse>(`/api/links/scraping`, {

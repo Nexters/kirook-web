@@ -1,9 +1,13 @@
 'use client';
 
 import { Fragment, useReducer, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { LinkList } from './components/LInkList';
 import { FormValues, LinkCreateForm } from './components/LinkCreateForm';
 import { LinkInput } from './components/LinkInput';
+import { ALL_FILTER_ID } from './const';
+import { linksKey } from './queries/queryKey';
+import { useDeleteLink } from './queries/useDeleteLink';
 import { useGetLinks } from './queries/useGetLinks';
 import { scrapLink } from './services/link';
 import { unionItemsBy } from './utils';
@@ -11,14 +15,15 @@ import { LinkItem } from '@/app/api/links/interface';
 import { Button, Icon, Loading, Modal, Portal } from '@/shared/components';
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
-import { v4 as uuidv4 } from 'uuid';
-
-const allFilterId = uuidv4();
 
 export default function LinkPage() {
+  const queryClient = useQueryClient();
   const { isLoading, data: links } = useGetLinks();
+  const { mutateAsync: deleteLink } = useDeleteLink();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedFilterId, setSelectedFilterId] = useState(allFilterId);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedLinks, setSelectedLinks] = useState<Set<string>>(new Set());
+  const [selectedFilterId, setSelectedFilterId] = useState(ALL_FILTER_ID);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [initialFormValue, setInitialFormValue] = useState<FormValues>({});
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -40,6 +45,27 @@ export default function LinkPage() {
     setIsCreateFormOpen(false);
   };
 
+  const toggleLinkSelectState = (id: string) => {
+    const newSet = new Set(selectedLinks);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setSelectedLinks(newSet);
+  };
+
+  const deleteLinks = async () => {
+    try {
+      await Promise.all([Array.from(selectedLinks).map((id) => deleteLink(id))]);
+      // queryClient.invalidateQueries(linksKey.all);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsEditMode(false);
+    }
+  };
+
   const handleSubmitLink = async (link: string) => {
     if (link.length === 0) {
       return;
@@ -52,6 +78,11 @@ export default function LinkPage() {
       link,
     });
     setIsCreateFormOpen(true);
+  };
+
+  const handleClickEditCompleteButton = () => {
+    setIsEditMode(false);
+    setSelectedLinks(new Set());
   };
 
   if (isLoading)
@@ -82,7 +113,7 @@ export default function LinkPage() {
           {links?.length && (
             <Fragment>
               <div className='no-scrollbar flex gap-2 overflow-hidden overflow-x-scroll py-2'>
-                {[{ id: allFilterId, color: 'gray', name: 'ALL' }, ...combinedFilters].map(({ id, name, color }) => (
+                {[{ id: ALL_FILTER_ID, color: 'gray', name: 'ALL' }, ...combinedFilters].map(({ id, name, color }) => (
                   <TagFilter
                     key={id}
                     isSelected={id === selectedFilterId}
@@ -95,14 +126,31 @@ export default function LinkPage() {
               </div>
               <div className='mt-[20px] flex justify-between'>
                 <span className='text-body2 text-grayscale-600'>{links.length}개의 링크</span>
-                <button className='text-body1 text-grayscale-900' type='button'>
-                  편집하기
-                </button>
+                {isEditMode ? (
+                  <div className='flex items-center gap-2 text-body1'>
+                    <button type='button' className='text-grayscale-900' onClick={() => deleteLinks()}>
+                      삭제
+                    </button>
+                    <div className='h-[10px] w-[1px] bg-gray-400' />
+                    <button type='button' className='text-accent-600' onClick={handleClickEditCompleteButton}>
+                      완료
+                    </button>
+                  </div>
+                ) : (
+                  <button className='text-body1 text-grayscale-900' type='button' onClick={() => setIsEditMode(true)}>
+                    편집하기
+                  </button>
+                )}
               </div>
             </Fragment>
           )}
         </div>
-        <LinkList links={filterLinks(selectedFilterId, links || [])} />
+        <LinkList
+          isEditMode={isEditMode}
+          selectedLinks={selectedLinks}
+          links={filterLinks(selectedFilterId, links || [])}
+          toggleLinkSelectState={toggleLinkSelectState}
+        />
         {isCreateFormOpen && (
           <LinkCreateForm
             initialFormValue={initialFormValue}
@@ -129,7 +177,7 @@ export default function LinkPage() {
 }
 
 function filterLinks(id: string, links: LinkItem[]) {
-  if (id === allFilterId) {
+  if (id === ALL_FILTER_ID) {
     return links;
   }
 

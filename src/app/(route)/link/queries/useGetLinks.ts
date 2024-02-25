@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { links } from './queryKey';
+import { linksKey } from './queryKey';
 import { getLinks } from '@/app/(route)/link/services/link';
 
 export function useGetLinks() {
@@ -14,7 +14,7 @@ export function useGetLinks() {
   }, []);
 
   return useQuery({
-    ...links.all,
+    ...linksKey.all,
     queryFn: () => getLinks(linkListId!),
     enabled: !!linkListId,
   });
