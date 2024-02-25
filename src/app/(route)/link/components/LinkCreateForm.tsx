@@ -5,9 +5,9 @@ import { LinkTagCreateModal, type PaletteColors } from './LinkTagCreateModal';
 import { useCreateLink } from '@/app/(route)/link/queries/useCreateLink';
 import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import DefaultOGImage from '@/assets/images/og-image.png';
-import { Icon } from '@/shared/components';
-import { Tag } from '@/shared/components/Tag';
+import { Confirm, Icon, Tag } from '@/shared/components';
 import { Header } from '@/shared/components/layout/Header';
+import { useModal } from '@/shared/components/modal/useModal';
 import { useToast } from '@/shared/components/toast/useToast';
 import { toKRDateString } from '@/shared/utils/date';
 import { v4 as uuidv4 } from 'uuid';
@@ -26,19 +26,40 @@ interface LinkCreateFormProps {
   resetLinkText(): void;
 }
 
-export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkCreateFormProps) {
+export function LinkCreateForm({ initialFormValue, close: closeCreateForm, resetLinkText }: LinkCreateFormProps) {
+  const { openModal } = useModal();
   const { openToast } = useToast();
   const { mutate: createLink } = useCreateLink();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [tags, setTags] = useState<Array<TagType>>([]);
   const { title, description, image, link } = initialFormValue;
 
   const titleRef = useRef(title || '');
   const descriptionRef = useRef(description || '');
 
+  const goBack = async () => {
+    const isConfirm = await openModal<boolean>((close) => (
+      <Confirm
+        title='삭제하실건가요?'
+        message='뒤로가기 시 작성한 내용은 저장되지 않아요'
+        close={() => close(false)}
+        confirm={() => close(true)}
+      />
+    ));
+
+    if (isConfirm) {
+      closeCreateForm();
+    }
+  };
+
   const addTag = (tagName: string, tagColor: PaletteColors) => {
     setTags((prev) => [{ id: uuidv4(), name: tagName, color: tagColor }, ...prev]);
+  };
+
+  const openLinkTagCreateModal = async () => {
+    await openModal((close) => (
+      <LinkTagCreateModal close={() => close(false)} onCreateTag={(tagName, tagColor) => addTag(tagName, tagColor)} />
+    ));
   };
 
   const removeTag = (id: string) => {
@@ -67,7 +88,7 @@ export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkC
         <Header
           logoText='Link'
           leftSideButton={
-            <button className='flex' type='button' onClick={() => close()}>
+            <button className='flex' type='button' onClick={() => goBack()}>
               <Icon iconType='ChevronLeft' width={24} height={24} className='stroke-grayscale-900' />
             </button>
           }
@@ -103,7 +124,7 @@ export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkC
               <label>태그</label>
               <div
                 className='flex cursor-pointer items-center justify-between rounded bg-grayscale-100 px-[13px] py-2 text-title3'
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => openLinkTagCreateModal()}
               >
                 <input
                   className='bg-transparent text-grayscale-600 outline-none'
@@ -125,13 +146,6 @@ export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkC
                 ))}
               </div>
             </div>
-            {isModalOpen && (
-              <LinkTagCreateModal
-                isOpen={isModalOpen}
-                close={() => setIsModalOpen(false)}
-                onCreateTag={(tagName, tagColor) => addTag(tagName, tagColor)}
-              />
-            )}
           </div>
         </div>
       </form>

@@ -9,3 +9,4 @@ export * from './LogoText';
 export * from './Loading';
 export * from './TagFilter';
 export * from './Tag';
+export * from './Confirm';

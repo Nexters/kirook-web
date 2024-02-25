@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ModalProvider } from '@/shared/components/modal/ModalProvider';
 import { ToastProvider } from '@/shared/components/toast/ToastProvider';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { changwonDangamAsac, pretendard } from '@/styles/fonts';
@@ -29,12 +30,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${pretendard.className}`}>
         <QueryProvider>
-          <ToastProvider>
-            {children}
-            <div id='toast-root' />
-            <div id='modal-root' />
-            <div id='loading-root' />
-          </ToastProvider>
+          <ModalProvider>
+            <ToastProvider>
+              {children}
+              <div id='toast-root' />
+              <div id='modal-root' />
+              <div id='loading-root' />
+            </ToastProvider>
+          </ModalProvider>
         </QueryProvider>
       </body>
     </html>
