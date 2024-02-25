@@ -1,7 +1,9 @@
-import { MouseEventHandler, useState } from 'react';
-import { Button, Portal } from '@/shared/components';
+import { Fragment, MouseEventHandler, useState } from 'react';
+import { Button } from '@/shared/components';
+import { useModal } from '@/shared/components/modal/useModal';
 import { cn } from '@/shared/utils/cn';
-import { VariantProps, tv } from 'tailwind-variants';
+import { VariantProps, tv } from 'tailwind-variants'
+import { Alert } from '@/shared/components/Alert';
 
 const PALETTE_COLORS = ['gray', 'red', 'yellow', 'green', 'blue', 'purple', 'pink'] as const;
 const MAX_TAG_LENGTH = 10;
@@ -9,14 +11,14 @@ const MAX_TAG_LENGTH = 10;
 export type PaletteColors = (typeof PALETTE_COLORS)[number];
 
 interface LinkTagCreateModalProps {
-  isOpen: boolean;
   close(): void;
   onCreateTag(tagName: string, tagColor: PaletteColors): void;
 }
 
-export function LinkTagCreateModal({ isOpen, close, onCreateTag }: LinkTagCreateModalProps) {
+export function LinkTagCreateModal({ close, onCreateTag }: LinkTagCreateModalProps) {
+  const { openModal } = useModal();
   const [tagName, setTagName] = useState('');
-  const [selectedTagColor, setSelectedTagColor] = useState<PaletteColors>('gray');
+  const [selectedTagColor, setSelectedTagColor] = useState<PaletteColors>();
 
   const changeTagNameInput = (value: string) => {
     if (value.length === MAX_TAG_LENGTH) {
@@ -26,10 +28,9 @@ export function LinkTagCreateModal({ isOpen, close, onCreateTag }: LinkTagCreate
     setTagName(value);
   };
 
-  const createTag = () => {
+  const createTag = async () => {
     if (!tagName || !selectedTagColor) {
-      // FIXME: validation UI 정책이 필요.
-      alert('태그 이름을 입력해주세요');
+      await openModal((close) => (<Alert close={() => close(true)} message='태그 이름과 색상을 선택해주세요' />))
       return;
     }
 
@@ -37,12 +38,10 @@ export function LinkTagCreateModal({ isOpen, close, onCreateTag }: LinkTagCreate
     close();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <Portal targetRoot='modal-root'>
+    <Fragment>
       <div className='absolute left-0 top-0 h-full w-full bg-black bg-opacity-30' onClick={() => close()} />
-      <div className='absolute left-1/2 top-1/2 z-10 flex w-[345px] -translate-x-1/2 -translate-y-1/2 flex-col items-start rounded-lg bg-white px-[20px] pb-[24px] pt-[28px]'>
+      <div className='absolute left-1/2 top-1/2 flex w-[345px] -translate-x-1/2 -translate-y-1/2 flex-col items-start rounded-lg bg-white px-[20px] pb-[24px] pt-[28px]'>
         <label className='mb-3 text-title1 text-grayscale-900'>태그</label>
         <input
           className='w-full rounded bg-grayscale-100 px-3 py-2 text-title3 outline-none'
@@ -67,7 +66,7 @@ export function LinkTagCreateModal({ isOpen, close, onCreateTag }: LinkTagCreate
           </Button>
         </div>
       </div>
-    </Portal>
+    </Fragment>
   );
 }
 
