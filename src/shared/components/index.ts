@@ -1,4 +1,4 @@
-export * from './Tabs';
+export * from './tabs';
 export * from './Icon';
 export * from './Navigation';
 export * from './Button';
@@ -7,3 +7,5 @@ export * from './Portal';
 export * from './Modal';
 export * from './LogoText';
 export * from './Loading';
+export * from './TagFilter';
+export * from './Tag';
