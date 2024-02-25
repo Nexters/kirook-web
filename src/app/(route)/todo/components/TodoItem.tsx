@@ -5,7 +5,7 @@ import { type FocusEvent, type FormEvent, useCallback, useRef, useState } from '
 import { TodoContentEditableText } from './TodoContentEditableText';
 import { useDeleteTodo } from '@/app/(route)/todo/queries/useDeleteTodo';
 import { useUpdateTodo } from '@/app/(route)/todo/queries/useUpdateTodo';
-import { Button, CheckBox, Confirm, Modal } from '@/shared/components';
+import { CheckBox, Confirm } from '@/shared/components';
 import { useModal } from '@/shared/components/modal/useModal';
 
 interface TodoItemProps {
