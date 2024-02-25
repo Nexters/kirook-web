@@ -2,7 +2,9 @@
 
 import { type FormEvent, type MutableRefObject, useState } from 'react';
 import ContentEditable, { type ContentEditableEvent } from 'react-contenteditable';
+import { cn } from '@/shared/utils/cn';
 
+const PLACEHOLDER = '링크 입력하기';
 interface LinkInputProps {
   textRef: MutableRefObject<string>;
   onSubmit(link: string): void;
@@ -27,12 +29,20 @@ export function LinkInput({ textRef, onSubmit }: LinkInputProps) {
   };
 
   return (
-    <form className='flex items-start gap-4 rounded bg-grayscale-50 p-[13px]' onSubmit={handleSubmit}>
+    <form className='relative flex items-start gap-4 rounded bg-grayscale-50 p-[13px]' onSubmit={handleSubmit}>
       <ContentEditable
         className='w-full overflow-hidden break-words text-title3 text-grayscale-600 outline-none'
         html={textRef.current}
         onChange={handleChange}
       />
+      {/* ContentEditable이 placeholder를 제공하지 않기 때문에 Hacky한 방법으로 처리 */}
+      <p
+        className={cn('absolute left-[13px] top-1/2 -translate-y-1/2 text-title1 text-grayscale-600', {
+          hidden: textRef.current.length > 0,
+        })}
+      >
+        {PLACEHOLDER}
+      </p>
       <button className='flex shrink-0' type='submit'>
         {isActive ? <AddActive /> : <Add />}
       </button>
