@@ -6,6 +6,7 @@ import { useCreateLink } from '@/app/(route)/link/queries/useCreateLink';
 import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import DefaultOGImage from '@/assets/images/og-image.png';
 import { Confirm, Icon, Tag } from '@/shared/components';
+import { Alert } from '@/shared/components/Alert';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
 import { useToast } from '@/shared/components/toast/useToast';
@@ -66,8 +67,12 @@ export function LinkCreateForm({ initialFormValue, close: closeCreateForm, reset
     setTags((tags) => tags.filter((tag) => tag.id !== id));
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    if (!titleRef.current || !descriptionRef.current) {
+      await openModal((close) => <Alert message='내용을 입력해 주세요' close={() => close(true)} />);
+      return;
+    }
 
     createLink({
       text: descriptionRef.current,
@@ -78,7 +83,7 @@ export function LinkCreateForm({ initialFormValue, close: closeCreateForm, reset
     });
 
     resetLinkText();
-    close();
+    closeCreateForm();
     openToast('저장되었습니다.');
   };
 
