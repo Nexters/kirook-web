@@ -5,7 +5,8 @@ import { type FocusEvent, type FormEvent, useCallback, useRef, useState } from '
 import { TodoContentEditableText } from './TodoContentEditableText';
 import { useDeleteTodo } from '@/app/(route)/todo/queries/useDeleteTodo';
 import { useUpdateTodo } from '@/app/(route)/todo/queries/useUpdateTodo';
-import { Button, CheckBox, Modal } from '@/shared/components';
+import { Button, CheckBox, Confirm, Modal } from '@/shared/components';
+import { useModal } from '@/shared/components/modal/useModal';
 
 interface TodoItemProps {
   id: string;
@@ -17,20 +18,12 @@ interface TodoItemProps {
 export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
+  const { openModal } = useModal();
   const { mutate: updateTodo } = useUpdateTodo(tab || 'today');
   const { mutate: deleteTodo } = useDeleteTodo();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const textRef = useRef(content);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const openModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   const toggleCheck = () => {
     updateTodo({ id, text: textRef.current, status: !isFullfilled, createdAt });
@@ -47,7 +40,7 @@ export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps
   };
 
   const handleSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       if (isEditMode) {
@@ -57,10 +50,21 @@ export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps
         updateTodo({ id, text: input, status: isFullfilled });
         setIsEditMode(false);
       } else {
-        openModal();
+        const isConfirm = await openModal<boolean>((close) => (
+          <Confirm
+            title='삭제하실건가요?'
+            message='삭제한 내용은 되돌릴 수 없어요'
+            close={() => close(false)}
+            confirm={() => close(true)}
+          />
+        ));
+
+        if (isConfirm) {
+          deleteTodo(id);
+        }
       }
     },
-    [id, isFullfilled, isEditMode, openModal, updateTodo],
+    [id, isFullfilled, isEditMode, openModal, updateTodo, deleteTodo],
   );
 
   return (
@@ -70,18 +74,6 @@ export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps
       <button ref={buttonRef} type='submit' className='w-fit shrink-0 text-body1 text-grayscale-700'>
         {isEditMode ? '확인' : '삭제'}
       </button>
-      <Modal
-        isOpen={isModalOpen}
-        title='삭제하실건가요?'
-        message='삭제한 내용은 되돌릴 수 없어요'
-        firstButton={<Button onClick={() => deleteTodo(id)}>확인</Button>}
-        secondButton={
-          <Button color='secondary' onClick={() => closeModal()}>
-            취소
-          </Button>
-        }
-        close={() => closeModal()}
-      />
     </form>
   );
 }
