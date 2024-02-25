@@ -26,6 +26,7 @@ export function LinkInput({ textRef, onSubmit }: LinkInputProps) {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(textRef.current);
+    textRef.current = '';
   };
 
   return (

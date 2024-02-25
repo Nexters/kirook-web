@@ -1,24 +1,23 @@
 'use client';
 
 import { Fragment, useReducer, useRef, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { LinkList } from './components/LInkList';
 import { FormValues, LinkCreateForm } from './components/LinkCreateForm';
 import { LinkInput } from './components/LinkInput';
 import { ALL_FILTER_ID } from './const';
-import { linksKey } from './queries/queryKey';
 import { useDeleteLink } from './queries/useDeleteLink';
 import { useGetLinks } from './queries/useGetLinks';
 import { scrapLink } from './services/link';
 import { unionItemsBy } from './utils';
 import { LinkItem } from '@/app/api/links/interface';
-import { Button, Icon, Loading, Modal, Portal } from '@/shared/components';
+import { Button, Confirm, Icon, Loading, Modal, Portal } from '@/shared/components';
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
+import { useModal } from '@/shared/components/modal/useModal';
 
 export default function LinkPage() {
-  const queryClient = useQueryClient();
-  const { isLoading, data: links } = useGetLinks();
+  const { openModal } = useModal();
+  const { isLoading, data: links, refetch } = useGetLinks();
   const { mutateAsync: deleteLink } = useDeleteLink();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -56,9 +55,22 @@ export default function LinkPage() {
   };
 
   const deleteLinks = async () => {
+    const isConfirm = await openModal((close) => (
+      <Confirm
+        title='삭제하실건가요?'
+        message='삭제한 내용은 되돌릴 수 없어요'
+        close={() => close(false)}
+        confirm={() => close(true)}
+      />
+    ));
+    if (!isConfirm) {
+      return;
+    }
+
     try {
-      await Promise.all([Array.from(selectedLinks).map((id) => deleteLink(id))]);
-      // queryClient.invalidateQueries(linksKey.all);
+      await Promise.allSettled([Array.from(selectedLinks).map((id) => deleteLink(id))]);
+
+      refetch();
     } catch (error) {
       console.error(error);
     } finally {
@@ -128,7 +140,12 @@ export default function LinkPage() {
                 <span className='text-body2 text-grayscale-600'>{links.length}개의 링크</span>
                 {isEditMode ? (
                   <div className='flex items-center gap-2 text-body1'>
-                    <button type='button' className='text-grayscale-900' onClick={() => deleteLinks()}>
+                    <button
+                      disabled={selectedLinks.size === 0}
+                      type='button'
+                      className='disabled:cursor-disabled text-grayscale-900 disabled:text-grayscale-500'
+                      onClick={() => deleteLinks()}
+                    >
                       삭제
                     </button>
                     <div className='h-[10px] w-[1px] bg-gray-400' />

@@ -8,7 +8,7 @@ export function useDeleteLink() {
   return useMutation({
     mutationFn: async (linkId: string) => deleteLink(linkId),
     onSuccess: () => {
-      queryClient.invalidateQueries(linksKey.all);
+      // queryClient.invalidateQueries(linksKey.all);
     },
   });
 }
