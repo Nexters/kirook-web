@@ -8,8 +8,16 @@ const config: Config = {
     extend: {
       fontFamily: {
         pretendard: ['var(--font-pretendard)', ...fontFamily.sans],
+        changwonDangamAsac: ['var(--font-changwon-dangam-asac)', ...fontFamily.sans],
       },
       fontSize: {
+        logo: [
+          '24px',
+          {
+            fontWeight: '700',
+            lineHeight: '28.8px',
+          },
+        ],
         header1: [
           '20px',
           {
@@ -80,6 +88,7 @@ const config: Config = {
         'tag-purple': '#EBDFFF',
         accent: {
           500: '#5ED236',
+          600: '#00BF41',
         },
         grayscale: {
           0: '#E5E5EF',

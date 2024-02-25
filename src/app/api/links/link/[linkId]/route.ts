@@ -178,7 +178,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { linkI
   const slug = params.linkId;
   const url = `https://api.notion.com/v1/pages/${slug}`;
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   try {
     const resp = await axios.patch<NotionLink>(
       url,

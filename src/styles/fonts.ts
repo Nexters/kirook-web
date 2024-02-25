@@ -24,4 +24,16 @@ const pretendard = localFont({
   display: 'swap',
 });
 
-export { pretendard };
+const changwonDangamAsac = localFont({
+  src: [
+    {
+      path: '../../public/fonts/ChangwonDangamAsac-Bold.otf',
+      weight: '700',
+    },
+  ],
+  variable: '--font-changwon-dangam-asac',
+  style: 'normal',
+  display: 'swap',
+});
+
+export { pretendard, changwonDangamAsac };

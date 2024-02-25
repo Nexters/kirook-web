@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { LinkItem, LinkResponse, NotionLink, NotionLinkResponse } from '../interface';
 import axios, { AxiosError } from 'axios';
 
-export async function GET(request: Request, { params }: { params: { linkListId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { linkListId: string } }) {
   const slug = params.linkListId;
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   const url = `https://api.notion.com/v1/databases/${slug}/query`;
 
   try {
@@ -43,12 +43,14 @@ export async function GET(request: Request, { params }: { params: { linkListId: 
   }
 }
 
-export async function POST(request: Request, { params }: { params: { linkListId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: { linkListId: string } }) {
   const slug = params.linkListId;
   const body = await request.json();
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   const url = 'https://api.notion.com/v1/pages';
+
+  console.log(body.tags);
 
   const data = {
     parent: {
@@ -84,7 +86,9 @@ export async function POST(request: Request, { params }: { params: { linkListId:
             type: 'text',
             text: {
               content: body.url,
-              link: null,
+              link: {
+                url: body.url,
+              },
             },
             annotations: {
               bold: false,
@@ -106,7 +110,12 @@ export async function POST(request: Request, { params }: { params: { linkListId:
             type: 'text',
             text: {
               content: body.image,
-              link: body.image,
+              link:
+                body.image.length > 0
+                  ? {
+                      url: body.image,
+                    }
+                  : null,
             },
             annotations: {
               bold: false,
@@ -122,8 +131,7 @@ export async function POST(request: Request, { params }: { params: { linkListId:
         ],
       },
       tags: {
-        type: 'multi_select',
-        multi_select: body.tgas,
+        multi_select: body.tags.map((tag: { name: string; color: string }) => ({ name: tag.name, color: tag.color })),
       },
       title: {
         id: 'title',
@@ -177,6 +185,8 @@ export async function POST(request: Request, { params }: { params: { linkListId:
     }
   } catch (e) {
     const error = e as AxiosError;
+
+    console.log(error);
     return NextResponse.json({ message: 'error', error: error.message });
   }
 }
