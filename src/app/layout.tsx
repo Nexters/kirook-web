@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ToastProvider } from '@/shared/components/Toast/ToastProvider';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { changwonDangamAsac, pretendard } from '@/styles/fonts';
 import 'slick-carousel/slick/slick-theme.css';
@@ -28,9 +29,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${pretendard.className}`}>
         <QueryProvider>
-          {children}
-          <div id='modal-root' />
-          <div id='loading-root' />
+          <ToastProvider>
+            {children}
+            <div id='toast-root' />
+            <div id='modal-root' />
+            <div id='loading-root' />
+          </ToastProvider>
         </QueryProvider>
       </body>
     </html>
