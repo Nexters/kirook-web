@@ -1,15 +1,15 @@
 'use client';
 
-import { type FormEvent, useRef, useState } from 'react';
+import { type FormEvent, type MutableRefObject, useState } from 'react';
 import ContentEditable, { type ContentEditableEvent } from 'react-contenteditable';
 
 interface LinkInputProps {
+  textRef: MutableRefObject<string>;
   onSubmit(link: string): void;
 }
 
-export function LinkInput({ onSubmit }: LinkInputProps) {
+export function LinkInput({ textRef, onSubmit }: LinkInputProps) {
   const [isActive, setIsActive] = useState(false);
-  const textRef = useRef('');
 
   const handleChange = (e: ContentEditableEvent) => {
     textRef.current = e.target.value;

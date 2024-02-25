@@ -88,6 +88,7 @@ const config: Config = {
         'tag-purple': '#EBDFFF',
         accent: {
           500: '#5ED236',
+          600: '#00BF41',
         },
         grayscale: {
           0: '#E5E5EF',

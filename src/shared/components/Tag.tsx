@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
 const tag = tv({
-  base: 'flex w-fit items-center gap-1 rounded-lg px-2 py-1 text-body2 text-grayscale-900',
+  base: 'flex w-fit items-center gap-1 rounded-xl px-2 py-1 text-body2 text-grayscale-900',
   variants: {
     color: {
       red: 'bg-tag-red',

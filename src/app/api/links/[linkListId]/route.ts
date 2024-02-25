@@ -50,6 +50,8 @@ export async function POST(request: NextRequest, { params }: { params: { linkLis
   const accessToken = request.cookies.get('accessToken')?.value;
   const url = 'https://api.notion.com/v1/pages';
 
+  console.log(body.tags);
+
   const data = {
     parent: {
       database_id: slug,
@@ -84,7 +86,9 @@ export async function POST(request: NextRequest, { params }: { params: { linkLis
             type: 'text',
             text: {
               content: body.url,
-              link: null,
+              link: {
+                url: body.url,
+              },
             },
             annotations: {
               bold: false,
@@ -106,7 +110,12 @@ export async function POST(request: NextRequest, { params }: { params: { linkLis
             type: 'text',
             text: {
               content: body.image,
-              link: body.image,
+              link:
+                body.image.length > 0
+                  ? {
+                      url: body.image,
+                    }
+                  : null,
             },
             annotations: {
               bold: false,
@@ -122,8 +131,7 @@ export async function POST(request: NextRequest, { params }: { params: { linkLis
         ],
       },
       tags: {
-        type: 'multi_select',
-        multi_select: body.tags,
+        multi_select: body.tags.map((tag: { name: string; color: string }) => ({ name: tag.name, color: tag.color })),
       },
       title: {
         id: 'title',
@@ -177,6 +185,8 @@ export async function POST(request: NextRequest, { params }: { params: { linkLis
     }
   } catch (e) {
     const error = e as AxiosError;
+
+    console.log(error);
     return NextResponse.json({ message: 'error', error: error.message });
   }
 }

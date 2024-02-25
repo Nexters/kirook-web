@@ -1,11 +1,13 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { type FormEventHandler, Fragment, MutableRefObject, useRef, useState } from 'react';
 import ContentEditable, { type ContentEditableEvent } from 'react-contenteditable';
 import { LinkTagCreateModal, type PaletteColors } from './LinkTagCreateModal';
+import { useCreateLink } from '@/app/(route)/link/queries/useCreateLink';
 import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import DefaultOGImage from '@/assets/images/og-image.png';
 import { Icon } from '@/shared/components';
 import { Tag } from '@/shared/components/Tag';
+import { Header } from '@/shared/components/layout/Header';
 import { toKRDateString } from '@/shared/utils/date';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -19,93 +21,135 @@ export interface FormValues extends LinkPreviewResponse {
 }
 interface LinkCreateFormProps {
   initialFormValue: FormValues;
+  close(): void;
+  resetLinkText(): void;
 }
 
-export function LinkCreateForm({ initialFormValue }: LinkCreateFormProps) {
+export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkCreateFormProps) {
+  const { mutate: createLink } = useCreateLink();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tags, setTags] = useState<Array<TagType>>([]);
   const { title, description, image, link } = initialFormValue;
 
+  const titleRef = useRef(title || '');
+  const descriptionRef = useRef(description || '');
+
   const addTag = (tagName: string, tagColor: PaletteColors) => {
-    setTags((prev) => [...prev, { id: uuidv4(), name: tagName, color: tagColor }]);
+    setTags((prev) => [{ id: uuidv4(), name: tagName, color: tagColor }, ...prev]);
   };
 
   const removeTag = (id: string) => {
     setTags((tags) => tags.filter((tag) => tag.id !== id));
   };
 
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+
+    createLink({
+      text: descriptionRef.current,
+      title: titleRef.current,
+      url: link || '',
+      image: image || '',
+      tags: tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
+    });
+
+    resetLinkText();
+    close();
+  };
+
   return (
-    <form className='absolute left-0 top-0 h-full w-full overflow-y-scroll bg-white px-[15px] pt-5'>
-      <span className='text-body2 text-grayscale-700 '>{toKRDateString(new Date())}</span>
-      <p className='my-3 overflow-hidden text-ellipsis whitespace-nowrap text-text text-grayscale-600'>{link}</p>
-      <div className='relative h-[182px] w-full overflow-hidden'>
-        <Image
-          src={image || DefaultOGImage}
-          className='rounded object-cover'
-          alt='og-image'
-          fill
-          priority
-          quality={100}
-        />
-      </div>
-      <div className='mt-[28px] flex flex-col gap-5 *:flex *:flex-col [&_label]:text-title1'>
-        <div>
-          <label>제목</label>
-          <Input text={title || ''} onChange={() => {}} />
-        </div>
-        <div>
-          <label>내용</label>
-          <Input text={description || ''} onChange={() => {}} />
-        </div>
-        <div>
-          <label>태그</label>
-          <div
-            className='flex cursor-pointer items-center justify-between rounded bg-grayscale-100 px-[13px] py-2 text-title3'
-            onClick={() => setIsModalOpen(true)}
-          >
-            <input
-              className='bg-transparent text-grayscale-600 outline-none'
-              placeholder='태그를 입력해주세요'
-              readOnly
-            />
-            <button type='button'>
-              <Add />
+    <Fragment>
+      <form className='absolute left-0 top-0 h-full w-full bg-white' onSubmit={handleSubmit}>
+        <Header
+          logoText='Link'
+          leftSideButton={
+            <button className='flex' type='button' onClick={() => close()}>
+              <Icon iconType='ChevronLeft' width={24} height={24} className='stroke-grayscale-900' />
             </button>
+          }
+          rightSideButton={
+            <button className='text-accent-600 justify-self-end text-title1' type='submit'>
+              저장
+            </button>
+          }
+        />
+        <div className='overflow-y-scroll px-[15px] pt-5' style={{ height: `calc(100% - 86px - 44px)` }}>
+          <span className='text-body2 text-grayscale-700 '>{toKRDateString(new Date())}</span>
+          <p className='my-3 overflow-hidden text-ellipsis whitespace-nowrap text-text text-grayscale-600'>{link}</p>
+          <div className='relative h-[182px] w-full overflow-hidden'>
+            <Image
+              src={image || DefaultOGImage}
+              className='rounded object-cover'
+              alt='og-image'
+              fill
+              priority
+              quality={100}
+            />
           </div>
-          <div className='mt-3 flex flex-wrap gap-2 py-2'>
-            {tags.map((tag) => (
-              <Tag key={tag.id} color={tag.color}>
-                {tag.name}
-                <button type='button' onClick={() => removeTag(tag.id)}>
-                  <Icon iconType='XMono' width={14} height={14} />
+          <div className='mt-[28px] flex flex-col gap-5 *:flex *:flex-col [&_label]:text-title1'>
+            <div>
+              <label>제목</label>
+              <Input textRef={titleRef} />
+            </div>
+            <div>
+              <label>내용</label>
+              <Input textRef={descriptionRef} />
+            </div>
+            <div>
+              <label>태그</label>
+              <div
+                className='flex cursor-pointer items-center justify-between rounded bg-grayscale-100 px-[13px] py-2 text-title3'
+                onClick={() => setIsModalOpen(true)}
+              >
+                <input
+                  className='bg-transparent text-grayscale-600 outline-none'
+                  placeholder='태그를 입력해주세요'
+                  readOnly
+                />
+                <button type='button'>
+                  <Add />
                 </button>
-              </Tag>
-            ))}
+              </div>
+              <div className='mt-3 flex flex-wrap gap-2 py-2'>
+                {tags.map((tag) => (
+                  <Tag key={tag.id} color={tag.color}>
+                    {tag.name}
+                    <button type='button' onClick={() => removeTag(tag.id)}>
+                      <Icon iconType='XMono' width={14} height={14} />
+                    </button>
+                  </Tag>
+                ))}
+              </div>
+            </div>
+            {isModalOpen && (
+              <LinkTagCreateModal
+                isOpen={isModalOpen}
+                close={() => setIsModalOpen(false)}
+                onCreateTag={(tagName, tagColor) => addTag(tagName, tagColor)}
+              />
+            )}
           </div>
         </div>
-        {isModalOpen && (
-          <LinkTagCreateModal
-            isOpen={isModalOpen}
-            close={() => setIsModalOpen(false)}
-            onCreateTag={(tagName, tagColor) => addTag(tagName, tagColor)}
-          />
-        )}
-      </div>
-    </form>
+      </form>
+    </Fragment>
   );
 }
 
 interface InputProps {
-  text: string;
-  onChange: (e: ContentEditableEvent) => void;
+  textRef: MutableRefObject<string>;
 }
 
-function Input({ text, onChange }: InputProps) {
+function Input({ textRef }: InputProps) {
+  const handleChange = (e: ContentEditableEvent) => {
+    textRef.current = e.target.value;
+  };
+
   return (
     <ContentEditable
-      className='rounded bg-grayscale-50 py-2 text-title3 text-grayscale-900 outline-none'
-      html={text}
-      onChange={onChange}
+      className='rounded py-2 text-title3 text-grayscale-900 outline-none transition-colors duration-300 focus:bg-grayscale-50'
+      html={textRef.current}
+      onChange={handleChange}
     />
   );
 }

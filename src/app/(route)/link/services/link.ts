@@ -1,4 +1,4 @@
-import type { LinkResponse, MultiSelect } from '@/app/api/links/interface';
+import type { LinkItem, LinkResponse, MultiSelect } from '@/app/api/links/interface';
 import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import http from '@/shared/utils/fetch';
 
@@ -9,10 +9,12 @@ export async function getLinks(linkListId: string) {
 }
 
 export async function createLink(
-  linkListId: string,
   payload: { text: string; title: string; url: string; image: string; tags: MultiSelect[] },
+  linkListId?: string,
 ) {
-  const response = await http.post(`/api/links/${linkListId}`, {
+  if (!linkListId) return {} as LinkItem;
+
+  const response = await http.post<LinkItem>(`/api/links/${linkListId}`, {
     ...payload,
   });
 
