@@ -61,7 +61,6 @@ export default function LinkPage() {
           )
         }
       />
-      <button onClick={() => resetLinkText()}>reset</button>
       <div className='flex h-full flex-col overflow-hidden'>
         <div className='px-[15px] pb-[12px] pt-[12px]'>
           <LinkInput textRef={linkTextRef} onSubmit={handleSubmitLink} />

@@ -7,6 +7,7 @@ import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import DefaultOGImage from '@/assets/images/og-image.png';
 import { Icon } from '@/shared/components';
 import { Tag } from '@/shared/components/Tag';
+import { useToast } from '@/shared/components/Toast/useToast';
 import { Header } from '@/shared/components/layout/Header';
 import { toKRDateString } from '@/shared/utils/date';
 import { v4 as uuidv4 } from 'uuid';
@@ -26,6 +27,7 @@ interface LinkCreateFormProps {
 }
 
 export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkCreateFormProps) {
+  const { openToast } = useToast();
   const { mutate: createLink } = useCreateLink();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,6 +58,7 @@ export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkC
 
     resetLinkText();
     close();
+    openToast('저장되었습니다.');
   };
 
   return (
@@ -69,7 +72,7 @@ export function LinkCreateForm({ initialFormValue, close, resetLinkText }: LinkC
             </button>
           }
           rightSideButton={
-            <button className='text-accent-600 justify-self-end text-title1' type='submit'>
+            <button className='justify-self-end text-title1 text-accent-600' type='submit'>
               저장
             </button>
           }
