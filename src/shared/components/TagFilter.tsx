@@ -1,7 +1,7 @@
 import { MouseEventHandler, type ReactNode } from 'react';
 import { type VariantProps, tv } from 'tailwind-variants';
 
-export type TagFilterColors = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray';
+export type TagFilterColors = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'gray' | 'pink';
 
 const tagFilter = tv({
   base: 'cursor-pointer whitespace-nowrap rounded-xl px-3 py-1 text-title3 text-grayscale-900',
