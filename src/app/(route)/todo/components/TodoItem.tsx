@@ -20,7 +20,7 @@ export function TodoItem({ id, isFullfilled, content, createdAt }: TodoItemProps
   const tab = searchParams.get('tab');
   const { openModal } = useModal();
   const { mutate: updateTodo } = useUpdateTodo(tab || 'today');
-  const { mutate: deleteTodo } = useDeleteTodo();
+  const { mutate: deleteTodo } = useDeleteTodo(tab || 'today');
   const [isEditMode, setIsEditMode] = useState(false);
   const textRef = useRef(content);
   const buttonRef = useRef<HTMLButtonElement>(null);
