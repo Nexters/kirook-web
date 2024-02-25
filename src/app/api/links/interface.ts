@@ -88,7 +88,7 @@ interface MultiSelectProperty {
   multi_select: MultiSelect[];
 }
 
-interface MultiSelect {
+export interface MultiSelect {
   id: string;
   name: string;
   color: string;

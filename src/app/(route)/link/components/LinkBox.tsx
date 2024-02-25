@@ -2,13 +2,16 @@ import Image from 'next/image';
 import DefaultOGImage from '@/assets/images/og-image.png';
 import { Tag } from '@/shared/components/Tag';
 
-interface LinkItemProps {
+interface LinkBoxProps {
   title: string;
   content: string;
-  createdAt: Date;
+  createdAt: string;
+  imageSrc?: string;
+  link?: string;
+  tags?: string[];
 }
 
-export function LinkItem({ title, content, createdAt }: LinkItemProps) {
+export function LinkBox({ title, content, createdAt, imageSrc, link, tags }: LinkBoxProps) {
   return (
     <div className='w-full overflow-hidden rounded border border-grayscale-200 px-3 py-5'>
       <div className='flex flex-col gap-2'>
@@ -21,7 +24,7 @@ export function LinkItem({ title, content, createdAt }: LinkItemProps) {
           })}
         </span>
         <div className='flex gap-2'>
-          <Image className='h-auto' width={128} src={DefaultOGImage} alt='og-image' priority />
+          <Image className='h-auto' width={128} src={imageSrc || DefaultOGImage} alt='og-image' priority />
           <div className='line-clamp-3 h-fit w-full text-ellipsis break-all text-body2 text-grayscale-700'>
             {content}
           </div>

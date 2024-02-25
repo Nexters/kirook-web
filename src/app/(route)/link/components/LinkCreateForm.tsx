@@ -1,36 +1,67 @@
 import Image from 'next/image';
+import { useState } from 'react';
 import ContentEditable, { type ContentEditableEvent } from 'react-contenteditable';
+import { LinkTagCreateModal, type PaletteColors } from './LinkTagCreateModal';
+import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import DefaultOGImage from '@/assets/images/og-image.png';
+import { Icon } from '@/shared/components';
 import { Tag } from '@/shared/components/Tag';
+import { toKRDateString } from '@/shared/utils/date';
+import { v4 as uuidv4 } from 'uuid';
 
-export function LinkCreateForm() {
+interface TagType {
+  id: string;
+  name: string;
+  color: PaletteColors;
+}
+export interface FormValues extends LinkPreviewResponse {
+  link?: string;
+}
+interface LinkCreateFormProps {
+  initialFormValue: FormValues;
+}
+
+export function LinkCreateForm({ initialFormValue }: LinkCreateFormProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tags, setTags] = useState<Array<TagType>>([]);
+  const { title, description, image, link } = initialFormValue;
+
+  const addTag = (tagName: string, tagColor: PaletteColors) => {
+    setTags((prev) => [...prev, { id: uuidv4(), name: tagName, color: tagColor }]);
+  };
+
+  const removeTag = (id: string) => {
+    setTags((tags) => tags.filter((tag) => tag.id !== id));
+  };
+
   return (
     <form className='absolute left-0 top-0 h-full w-full overflow-y-scroll bg-white px-[15px] pt-5'>
-      <span className='text-body2 text-grayscale-700 '>{new Date().toLocaleString('ko-KR')}</span>
-      <p className='my-3 overflow-hidden text-ellipsis whitespace-nowrap text-text text-grayscale-600'>
-        https://search.naver.com/search.naver?where=image&sm=tab_jum&query=%EB%81%BC%EB%A3%A9
-      </p>
-      <Image
-        src={DefaultOGImage}
-        alt='og-image'
-        className='h-auto w-full rounded object-cover'
-        priority
-        quality={100}
-      />
+      <span className='text-body2 text-grayscale-700 '>{toKRDateString(new Date())}</span>
+      <p className='my-3 overflow-hidden text-ellipsis whitespace-nowrap text-text text-grayscale-600'>{link}</p>
+      <div className='relative h-[182px] w-full overflow-hidden'>
+        <Image
+          src={image || DefaultOGImage}
+          className='rounded object-cover'
+          alt='og-image'
+          fill
+          priority
+          quality={100}
+        />
+      </div>
       <div className='mt-[28px] flex flex-col gap-5 *:flex *:flex-col [&_label]:text-title1'>
         <div>
           <label>제목</label>
-          <Input text='2' onChange={() => {}} />
+          <Input text={title || ''} onChange={() => {}} />
         </div>
         <div>
           <label>내용</label>
-          <Input text='2' onChange={() => {}} />
+          <Input text={description || ''} onChange={() => {}} />
         </div>
         <div>
           <label>태그</label>
           <div
             className='flex cursor-pointer items-center justify-between rounded bg-grayscale-100 px-[13px] py-2 text-title3'
-            onClick={() => {}}
+            onClick={() => setIsModalOpen(true)}
           >
             <input
               className='bg-transparent text-grayscale-600 outline-none'
@@ -42,15 +73,23 @@ export function LinkCreateForm() {
             </button>
           </div>
           <div className='mt-3 flex flex-wrap gap-2 py-2'>
-            <Tag>tag임니다</Tag>
-            <Tag>tag임니다</Tag>
-            <Tag>tag임니다</Tag>
-            <Tag>tag임니다</Tag>
-            <Tag>tag임니다</Tag>
-            <Tag>tag임니다</Tag>
-            <Tag>tag임니다</Tag>
+            {tags.map((tag) => (
+              <Tag key={tag.id} color={tag.color}>
+                {tag.name}
+                <button type='button' onClick={() => removeTag(tag.id)}>
+                  <Icon iconType='XMono' width={14} height={14} />
+                </button>
+              </Tag>
+            ))}
           </div>
         </div>
+        {isModalOpen && (
+          <LinkTagCreateModal
+            isOpen={isModalOpen}
+            close={() => setIsModalOpen(false)}
+            onCreateTag={(tagName, tagColor) => addTag(tagName, tagColor)}
+          />
+        )}
       </div>
     </form>
   );

@@ -51,4 +51,4 @@ const TodoPage = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(TodoPage), { ssr: false });
+export default TodoPage;

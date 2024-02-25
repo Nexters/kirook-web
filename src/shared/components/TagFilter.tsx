@@ -13,6 +13,7 @@ const tagFilter = tv({
       blue: 'bg-tag-blue',
       purple: 'bg-tag-purple',
       gray: 'bg-tag-gray',
+      pink: 'bg-tag-pink',
     },
     isSelected: {
       true: 'bg-black text-title2 text-white',
