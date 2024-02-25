@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { todos } from './queryKey';
-import { updateTodo } from '@/app/(route)/todo/apis/todo';
-import type { UpdateTodo } from '@/app/(route)/todo/apis/types';
+import { updateTodo } from '@/app/(route)/todo/services/todo';
+import type { UpdateTodo } from '@/app/(route)/todo/services/types';
 import { sortTodos } from '@/app/(route)/todo/utils/sortTodos';
 import { Todo } from '@/app/api/todos/[slug]/route';
 

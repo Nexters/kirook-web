@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { todos } from './queryKey';
-import { getTodoList } from '@/app/(route)/todo/apis/todo';
+import { getTodoList } from '@/app/(route)/todo/services/todo';
 import { sortTodos } from '@/app/(route)/todo/utils/sortTodos';
 import { Todo } from '@/app/api/todos/[slug]/route';
 
