@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Fragment, useReducer, useRef, useState } from 'react';
 import { LinkList } from './components/LInkList';
 import { FormValues, LinkCreateForm } from './components/LinkCreateForm';
@@ -14,9 +15,11 @@ import { Button, Confirm, Icon, Loading, Modal, Portal } from '@/shared/componen
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
+import { decodeBase64UrlSafe, encodeBase64UrlSafe } from '@/shared/utils/base64';
 import { isHTTPError } from '@/shared/utils/error';
 
 export default function LinkPage() {
+  const router = useRouter();
   const { openModal } = useModal();
   const { isLoading, data: links } = useGetLinks();
   const [isRefetchingLinks, setIsRefetchingLinks] = useState(false);
@@ -86,6 +89,9 @@ export default function LinkPage() {
       return;
     }
 
+    // CreateForm이 페이지로 나와야 하는 상황에 대비해 기반만 추가
+    // const encoded = encodeBase64UrlSafe(link);
+    // router.push(`link/${encoded}`);
     try {
       const response = await scrapLink(link);
 
