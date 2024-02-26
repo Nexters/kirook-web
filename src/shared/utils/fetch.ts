@@ -1,3 +1,5 @@
+import { HTTPError } from './error';
+
 type FetchUrl = string | URL | globalThis.Request;
 type AnyBody = Record<string, any>;
 
@@ -15,7 +17,7 @@ async function request<Response>(url: FetchUrl, { headers, ...rest }: RequestIni
   });
 
   if (response.status >= 400) {
-    throw new Error(`status code: ${response.status} error가 발생했습니다`);
+    throw new HTTPError(response.status, `status code: ${response.status} error가 발생했습니다`);
   }
 
   const json = await response.json();

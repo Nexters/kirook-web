@@ -14,6 +14,7 @@ import { Button, Confirm, Icon, Loading, Modal, Portal } from '@/shared/componen
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
+import { isHTTPError } from '@/shared/utils/error';
 
 export default function LinkPage() {
   const { openModal } = useModal();
@@ -83,13 +84,31 @@ export default function LinkPage() {
       return;
     }
 
-    const response = await scrapLink(link);
+    try {
+      const response = await scrapLink(link);
 
-    setInitialFormValue({
-      ...response,
-      link,
-    });
-    setIsCreateFormOpen(true);
+      setInitialFormValue({
+        ...response,
+        link,
+      });
+      setIsCreateFormOpen(true);
+    } catch (error) {
+      if (isHTTPError(error) && error.status === 404) {
+        const isConfirm = await openModal<boolean>((close) => (
+          <Confirm
+            title='유효하지 않은 링크입니다'
+            message='링크를 다시 확인해주세요'
+            close={() => close(false)}
+            confirm={() => close(true)}
+          />
+        ));
+
+        if (!isConfirm) {
+          linkTextRef.current = '';
+          forceUpdate();
+        }
+      }
+    }
   };
 
   const handleClickEditCompleteButton = () => {
