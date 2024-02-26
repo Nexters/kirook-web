@@ -1,4 +1,4 @@
-export * from './tabs';
+export * from './tabs2';
 export * from './Icon';
 export * from './Navigation';
 export * from './Button';

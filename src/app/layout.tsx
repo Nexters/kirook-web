@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ToastProvider } from '@/shared/components/Toast2/ToastProvider';
 import { ModalProvider } from '@/shared/components/modal/ModalProvider';
-import { ToastProvider } from '@/shared/components/toast/ToastProvider';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { changwonDangamAsac, pretendard } from '@/styles/fonts';
 import 'slick-carousel/slick/slick-theme.css';

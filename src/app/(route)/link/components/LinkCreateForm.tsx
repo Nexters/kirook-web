@@ -7,9 +7,9 @@ import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import DefaultOGImage from '@/assets/images/og-image.png';
 import { Confirm, Icon, Tag } from '@/shared/components';
 import { Alert } from '@/shared/components/Alert';
+import { useToast } from '@/shared/components/Toast2/useToast';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
-import { useToast } from '@/shared/components/toast/useToast';
 import { toKRDateString } from '@/shared/utils/date';
 import { v4 as uuidv4 } from 'uuid';
 
