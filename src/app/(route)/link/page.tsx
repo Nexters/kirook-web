@@ -18,7 +18,8 @@ import { isHTTPError } from '@/shared/utils/error';
 
 export default function LinkPage() {
   const { openModal } = useModal();
-  const { isLoading, data: links, refetch } = useGetLinks();
+  const { isLoading, data: links } = useGetLinks();
+  const [isRefetchingLinks, setIsRefetchingLinks] = useState(false);
   const { mutateAsync: deleteLink } = useDeleteLink();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -69,13 +70,14 @@ export default function LinkPage() {
     }
 
     try {
-      await Promise.allSettled([Array.from(selectedLinks).map((id) => deleteLink(id))]);
-
-      refetch();
+      setIsRefetchingLinks(true);
+      const promises = [Array.from(selectedLinks).map((id) => deleteLink(id))];
+      await Promise.allSettled(promises);
     } catch (error) {
       console.error(error);
     } finally {
       setIsEditMode(false);
+      setIsRefetchingLinks(false);
     }
   };
 
@@ -122,6 +124,14 @@ export default function LinkPage() {
         <Loading type='fetching' />
       </Portal>
     );
+
+  if (isRefetchingLinks) {
+    return (
+      <Portal targetRoot='loading-root'>
+        <Loading type='saving' />
+      </Portal>
+    );
+  }
 
   return (
     <div style={{ height: `calc(100% - 86px)` }} className='flex flex-col'>

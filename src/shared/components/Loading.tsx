@@ -9,7 +9,7 @@ interface LoadingProps {
 export function Loading({ type }: LoadingProps) {
   return (
     <div className='z-100 absolute left-0 top-0 flex h-full w-full items-center justify-center bg-white'>
-      <div className='absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-3'>
+      <div className='absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3'>
         <Image
           src={type === 'fetching' ? loadingFetch : loadingSave}
           alt='loading view'
