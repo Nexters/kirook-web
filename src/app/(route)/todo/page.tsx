@@ -7,7 +7,7 @@ import { TodoTabLabel } from './components/TodoTabLabel';
 import { useGetTodosV2 } from './queries/useGetTodos';
 import { Loading, Portal } from '@/shared/components';
 import { Header } from '@/shared/components/layout/Header';
-import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/tabs2';
+import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/tabs';
 
 const TodoPage = () => {
   const [
