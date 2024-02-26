@@ -26,7 +26,7 @@ export function LinkInput({ textRef, onSubmit }: LinkInputProps) {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(textRef.current);
-    textRef.current = '';
+    setIsActive(false);
   };
 
   return (
@@ -37,13 +37,15 @@ export function LinkInput({ textRef, onSubmit }: LinkInputProps) {
         onChange={handleChange}
       />
       {/* ContentEditable이 placeholder를 제공하지 않기 때문에 Hacky한 방법으로 처리 */}
-      <p
-        className={cn('absolute left-[13px] top-1/2 -translate-y-1/2 text-title1 text-grayscale-600', {
-          hidden: textRef.current.length > 0,
-        })}
-      >
-        {PLACEHOLDER}
-      </p>
+      {textRef.current.length === 0 && (
+        <p
+          className={cn('absolute left-[13px] top-1/2 -translate-y-1/2 text-title1 text-grayscale-600', {
+            // hidden: textRef.current.length > 0,
+          })}
+        >
+          {PLACEHOLDER}
+        </p>
+      )}
       <button className='flex shrink-0' type='submit'>
         {isActive ? <AddActive /> : <Add />}
       </button>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Fragment, useReducer, useRef, useState } from 'react';
 import { LinkList } from './components/LInkList';
 import { FormValues, LinkCreateForm } from './components/LinkCreateForm';
@@ -14,10 +15,14 @@ import { Button, Confirm, Icon, Loading, Modal, Portal } from '@/shared/componen
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
+import { decodeBase64UrlSafe, encodeBase64UrlSafe } from '@/shared/utils/base64';
+import { isHTTPError } from '@/shared/utils/error';
 
 export default function LinkPage() {
+  const router = useRouter();
   const { openModal } = useModal();
-  const { isLoading, data: links, refetch } = useGetLinks();
+  const { isLoading, data: links } = useGetLinks();
+  const [isRefetchingLinks, setIsRefetchingLinks] = useState(false);
   const { mutateAsync: deleteLink } = useDeleteLink();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -68,13 +73,14 @@ export default function LinkPage() {
     }
 
     try {
-      await Promise.allSettled([Array.from(selectedLinks).map((id) => deleteLink(id))]);
-
-      refetch();
+      setIsRefetchingLinks(true);
+      const promises = [Array.from(selectedLinks).map((id) => deleteLink(id))];
+      await Promise.allSettled(promises);
     } catch (error) {
       console.error(error);
     } finally {
       setIsEditMode(false);
+      setIsRefetchingLinks(false);
     }
   };
 
@@ -83,13 +89,34 @@ export default function LinkPage() {
       return;
     }
 
-    const response = await scrapLink(link);
+    // CreateForm이 페이지로 나와야 하는 상황에 대비해 기반만 추가
+    // const encoded = encodeBase64UrlSafe(link);
+    // router.push(`link/${encoded}`);
+    try {
+      const response = await scrapLink(link);
 
-    setInitialFormValue({
-      ...response,
-      link,
-    });
-    setIsCreateFormOpen(true);
+      setInitialFormValue({
+        ...response,
+        link,
+      });
+      setIsCreateFormOpen(true);
+    } catch (error) {
+      if (isHTTPError(error) && error.status === 404) {
+        const isConfirm = await openModal<boolean>((close) => (
+          <Confirm
+            title='유효하지 않은 링크입니다'
+            message='링크를 다시 확인해주세요'
+            close={() => close(false)}
+            confirm={() => close(true)}
+          />
+        ));
+
+        if (!isConfirm) {
+          linkTextRef.current = '';
+          forceUpdate();
+        }
+      }
+    }
   };
 
   const handleClickEditCompleteButton = () => {
@@ -103,6 +130,14 @@ export default function LinkPage() {
         <Loading type='fetching' />
       </Portal>
     );
+
+  if (isRefetchingLinks) {
+    return (
+      <Portal targetRoot='loading-root'>
+        <Loading type='saving' />
+      </Portal>
+    );
+  }
 
   return (
     <div style={{ height: `calc(100% - 86px)` }} className='flex flex-col'>

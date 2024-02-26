@@ -16,6 +16,7 @@ export function useGetLinks() {
   return useQuery({
     ...linksKey.all,
     queryFn: () => getLinks(linkListId!),
+    staleTime: 0,
     enabled: !!linkListId,
   });
 }
