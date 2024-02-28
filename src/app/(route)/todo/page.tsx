@@ -1,6 +1,5 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { TodoInput } from './components/TodoInput';
 import { TodoList } from './components/TodoList';
 import { TodoTabLabel } from './components/TodoTabLabel';
@@ -8,6 +7,8 @@ import { useGetTodosV2 } from './queries/useGetTodos';
 import { Loading, Portal } from '@/shared/components';
 import { Header } from '@/shared/components/layout/Header';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/components/tabs';
+
+export const dynamic = 'force-dynamic';
 
 const TodoPage = () => {
   const [

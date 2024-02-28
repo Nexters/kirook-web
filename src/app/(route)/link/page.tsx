@@ -18,6 +18,8 @@ import { useModal } from '@/shared/components/modal/useModal';
 import { decodeBase64UrlSafe, encodeBase64UrlSafe } from '@/shared/utils/base64';
 import { isHTTPError } from '@/shared/utils/error';
 
+export const dynamic = 'force-dynamic';
+
 export default function LinkPage() {
   const router = useRouter();
   const { openModal } = useModal();
