@@ -23,6 +23,7 @@ export function LinkList({ isEditMode, selectedLinks, links, toggleLinkSelectSta
           createdAt={link.createdAt}
           imageSrc={link.image}
           tags={link.tags}
+          link={link.url}
           selectLink={() => toggleLinkSelectState(link.id)}
         />
       ))}
