@@ -79,6 +79,11 @@ export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreat
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    // if (!url) {
+    //   await openModal((close) => <Alert message='링크가 존재하지 않습니다' close={() => close(true)} />);
+    //   return;
+    // }
+
     if (!titleRef.current || !descriptionRef.current) {
       await openModal((close) => <Alert message='내용을 입력해 주세요' close={() => close(true)} />);
       return;

@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { Fragment, useReducer, useRef, useState } from 'react';
 import { LinkList } from './components/LInkList';
-import { FormValues, LinkCreateForm } from './components/LinkCreateForm';
 import { LinkInput } from './components/LinkInput';
 import { ALL_FILTER_ID } from './const';
 import { useDeleteLink } from './queries/useDeleteLink';
@@ -11,12 +10,12 @@ import { useGetLinks } from './queries/useGetLinks';
 import { scrapLink } from './services/link';
 import { unionItemsBy } from './utils';
 import { LinkItem } from '@/app/api/links/interface';
-import { Button, Confirm, Icon, Loading, Modal, Portal } from '@/shared/components';
+import { Confirm, Icon, Loading, Portal } from '@/shared/components';
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
-import { decodeBase64UrlSafe, encodeBase64UrlSafe } from '@/shared/utils/base64';
 import { isHTTPError } from '@/shared/utils/error';
+import { useLinkFormValueStore } from '@/stores/useLinkFormValueStore';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,12 +25,11 @@ export default function LinkPage() {
   const { isLoading, data: links } = useGetLinks();
   const [isRefetchingLinks, setIsRefetchingLinks] = useState(false);
   const { mutateAsync: deleteLink } = useDeleteLink();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedLinks, setSelectedLinks] = useState<Set<string>>(new Set());
   const [selectedFilterId, setSelectedFilterId] = useState(ALL_FILTER_ID);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
-  const [initialFormValue, setInitialFormValue] = useState<FormValues>({});
+  const { setFormValue } = useLinkFormValueStore();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const linkTextRef = useRef('');
 
@@ -39,12 +37,6 @@ export default function LinkPage() {
 
   const selectFilter = (id: string) => {
     setSelectedFilterId(id);
-  };
-
-  const resetLinkText = () => {
-    linkTextRef.current = '';
-    // ref의 변화를 rendering하기 위해 실행
-    forceUpdate();
   };
 
   const closeCreateForm = () => {
@@ -91,17 +83,17 @@ export default function LinkPage() {
       return;
     }
 
-    // CreateForm이 페이지로 나와야 하는 상황에 대비해 기반만 추가
-    // const encoded = encodeBase64UrlSafe(link);
-    // router.push(`link/${encoded}`);
     try {
-      const response = await scrapLink(link);
+      const { title, description, image } = await scrapLink(link);
 
-      setInitialFormValue({
-        ...response,
-        link,
+      setFormValue({
+        title,
+        description,
+        image,
+        url: link,
       });
-      setIsCreateFormOpen(true);
+
+      router.push(`link/write`);
     } catch (error) {
       if (isHTTPError(error) && error.status === 404) {
         const isConfirm = await openModal<boolean>((close) => (
@@ -205,27 +197,7 @@ export default function LinkPage() {
           links={filterLinks(selectedFilterId, links || [])}
           toggleLinkSelectState={toggleLinkSelectState}
         />
-        {isCreateFormOpen && (
-          <LinkCreateForm
-            initialFormValue={initialFormValue}
-            close={() => setIsCreateFormOpen(false)}
-            resetLinkText={() => resetLinkText()}
-          />
-        )}
       </div>
-      {isModalOpen && (
-        <Modal
-          isOpen={isModalOpen}
-          title='유효하지 않은 링크입니다'
-          message='링크를 다시 확인해주세요'
-          close={() => setIsModalOpen(false)}
-          firstButton={
-            <Button color='secondary' onClick={() => setIsModalOpen(false)}>
-              확인
-            </Button>
-          }
-        />
-      )}
     </div>
   );
 }

@@ -39,7 +39,10 @@ export function LinkBox({
     >
       <div className='flex flex-col gap-2'>
         <div className='flex w-full items-center justify-between gap-2'>
-          <Link href={`/link/${id}`}>
+          <Link href={{
+            pathname: '/link/write',
+            query: { id }
+          }}>
             <h2 className='grow truncate text-title3 text-black'>{title}</h2>
           </Link>
           {isEditMode && (
