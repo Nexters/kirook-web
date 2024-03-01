@@ -2,6 +2,12 @@ import type { LinkItem, LinkResponse, MultiSelect } from '@/app/api/links/interf
 import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
 import http from '@/shared/utils/fetch';
 
+export async function getLink(linkId: string) {
+  const response = await http.get<LinkItem>(`/api/links/link/${linkId}`);
+
+  return response;
+}
+
 export async function getLinks(linkListId: string) {
   const response = await http.get<LinkResponse>(`/api/links/${linkListId}`);
 
