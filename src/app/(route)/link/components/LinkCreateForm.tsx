@@ -1,44 +1,69 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { type FormEventHandler, Fragment, MutableRefObject, useRef, useState } from 'react';
 import ContentEditable, { type ContentEditableEvent } from 'react-contenteditable';
 import { LinkTagCreateModal, type PaletteColors } from './LinkTagCreateModal';
 import { useCreateLink } from '@/app/(route)/link/queries/useCreateLink';
-import { LinkPreviewResponse } from '@/app/api/links/scraping/route';
+import { useUpdateLink } from '@/app/(route)/link/queries/useUpdateLink';
+import type { MultiSelect } from '@/app/api/links/interface';
 import DefaultOGImage from '@/assets/images/og-image.png';
 import { Confirm, Icon, Tag } from '@/shared/components';
 import { Alert } from '@/shared/components/Alert';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
-import { useToast } from '@/shared/components/toast/useToast';
 import { toKRDateString } from '@/shared/utils/date';
+import { useToastShowStore } from '@/stores/useToastShowStore';
 import { v4 as uuidv4 } from 'uuid';
+
+type EditMode = 'create' | 'update';
 
 interface TagType {
   id: string;
   name: string;
   color: PaletteColors;
 }
-export interface FormValues extends LinkPreviewResponse {
-  link?: string;
+export interface FormValues {
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  tags?: MultiSelect[];
 }
 interface LinkCreateFormProps {
+  editMode?: EditMode;
+  linkId?: string;
   initialFormValue: FormValues;
-  close(): void;
-  resetLinkText(): void;
 }
 
-export function LinkCreateForm({ initialFormValue, close: closeCreateForm, resetLinkText }: LinkCreateFormProps) {
+export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreateFormProps) {
+  const router = useRouter();
   const { openModal } = useModal();
-  const { openToast } = useToast();
   const { mutate: createLink } = useCreateLink();
+  const { mutate: updateLink } = useUpdateLink();
+  const { setToastShow } = useToastShowStore();
 
-  const [tags, setTags] = useState<Array<TagType>>([]);
-  const { title, description, image, link } = initialFormValue;
+  const { title, description, image, url, tags: initialTags } = initialFormValue;
+  const tagList = (initialTags || []) as TagType[];
+  const [tags, setTags] = useState<Array<TagType>>([...tagList]);
 
   const titleRef = useRef(title || '');
   const descriptionRef = useRef(description || '');
 
   const goBack = async () => {
+    const currentFormValue = {
+      title: titleRef.current,
+      description: descriptionRef.current,
+      image,
+      url,
+      tags: tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
+    };
+
+    if (!isUpdated(initialFormValue, currentFormValue)) {
+      router.back();
+      return;
+    }
+
     const isConfirm = await openModal<boolean>((close) => (
       <Confirm
         title='삭제하실건가요?'
@@ -49,7 +74,7 @@ export function LinkCreateForm({ initialFormValue, close: closeCreateForm, reset
     ));
 
     if (isConfirm) {
-      closeCreateForm();
+      router.back();
     }
   };
 
@@ -69,22 +94,44 @@ export function LinkCreateForm({ initialFormValue, close: closeCreateForm, reset
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    if (!url) {
+      await openModal((close) => (
+        <Alert message='링크가 존재하지 않습니다. 링크를 입력해주세요' close={() => close(true)} />
+      ));
+      router.push('/link');
+      return;
+    }
+
     if (!titleRef.current || !descriptionRef.current) {
       await openModal((close) => <Alert message='내용을 입력해 주세요' close={() => close(true)} />);
       return;
     }
 
-    createLink({
-      text: descriptionRef.current,
-      title: titleRef.current,
-      url: link || '',
-      image: image || '',
-      tags: tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
-    });
+    if (editMode === 'create') {
+      createLink({
+        text: descriptionRef.current,
+        title: titleRef.current,
+        url: url || '',
+        image: image || '',
+        tags: tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
+      });
+    } else {
+      if (!linkId) {
+        return;
+      }
 
-    resetLinkText();
-    closeCreateForm();
-    openToast('저장되었습니다.');
+      updateLink({
+        linkId,
+        text: descriptionRef.current,
+        title: titleRef.current,
+        url: url || '',
+        image: image || '',
+        tags: tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
+      });
+    }
+
+    setToastShow();
+    router.push('/link');
   };
 
   return (
@@ -105,13 +152,18 @@ export function LinkCreateForm({ initialFormValue, close: closeCreateForm, reset
         />
         <div className='overflow-y-scroll px-[15px] pt-5' style={{ height: `calc(100% - 86px - 44px)` }}>
           <span className='text-body2 text-grayscale-700 '>{toKRDateString(new Date())}</span>
-          <p className='my-3 overflow-hidden text-ellipsis whitespace-nowrap text-text text-grayscale-600'>{link}</p>
+          <Link href={url!} passHref target='_blank'>
+            <p className='my-3 cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-text text-grayscale-600'>
+              {url}
+            </p>
+          </Link>
           <div className='relative h-[182px] w-full overflow-hidden'>
             <Image
               src={image || DefaultOGImage}
               className='rounded object-cover'
               alt='og-image'
               fill
+              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
               priority
               quality={100}
             />
@@ -204,4 +256,17 @@ function Add() {
       </g>
     </svg>
   );
+}
+
+function isUpdated(prev: FormValues, current: FormValues) {
+  return Object.keys(prev).some((key) => {
+    if (key === 'tags') {
+      const prevTags = prev['tags']?.map((tag) => tag.id).toSorted();
+      const currentTags = current['tags']?.map((tag) => tag.id).toSorted();
+      console.log(prevTags, currentTags);
+      return JSON.stringify(prevTags) !== JSON.stringify(currentTags);
+    }
+
+    return prev[key as keyof FormValues] !== current[key as keyof FormValues];
+  });
 }

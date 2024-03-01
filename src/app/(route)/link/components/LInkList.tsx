@@ -16,6 +16,7 @@ export function LinkList({ isEditMode, selectedLinks, links, toggleLinkSelectSta
       {links?.map((link) => (
         <LinkBox
           key={link.id}
+          id={link.id}
           isSelected={selectedLinks.has(link.id)}
           isEditMode={isEditMode}
           title={link.title}
@@ -23,6 +24,7 @@ export function LinkList({ isEditMode, selectedLinks, links, toggleLinkSelectSta
           createdAt={link.createdAt}
           imageSrc={link.image}
           tags={link.tags}
+          link={link.url}
           selectLink={() => toggleLinkSelectState(link.id)}
         />
       ))}

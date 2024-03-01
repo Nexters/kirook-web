@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { PaletteColors } from './LinkTagCreateModal';
 import { MultiSelect } from '@/app/api/links/interface';
 import DefaultOGImage from '@/assets/images/og-image.png';
@@ -9,11 +10,12 @@ import { cn } from '@/shared/utils/cn';
 interface LinkBoxProps {
   isSelected?: boolean;
   isEditMode: boolean;
+  id: string;
   title: string;
   content: string;
   createdAt: string;
   imageSrc?: string;
-  link?: string;
+  link: string;
   tags?: MultiSelect[];
   selectLink(): void;
 }
@@ -21,6 +23,7 @@ interface LinkBoxProps {
 export function LinkBox({
   isSelected = false,
   isEditMode,
+  id,
   title,
   content,
   createdAt,
@@ -31,12 +34,19 @@ export function LinkBox({
   return (
     <div
       className={cn('w-full flex-shrink-0 overflow-hidden rounded border border-grayscale-200 bg-white px-3 py-5', {
-        'bg-grayscale-200':isSelected
+        'bg-grayscale-200': isSelected,
       })}
     >
       <div className='flex flex-col gap-2'>
         <div className='flex w-full items-center justify-between gap-2'>
-          <h2 className='grow truncate text-title3 text-black'>{title}</h2>
+          <Link
+            href={{
+              pathname: '/link/write',
+              query: { id },
+            }}
+          >
+            <h2 className='grow truncate text-title3 text-black'>{title}</h2>
+          </Link>
           {isEditMode && (
             <button type='button' onClick={() => selectLink()}>
               <CheckBox isChecked={isSelected} className='shrink-0' />
@@ -55,6 +65,7 @@ export function LinkBox({
             <Image
               className='h-auto w-auto object-cover'
               fill
+              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
               src={imageSrc || DefaultOGImage}
               alt='og-image'
               priority
