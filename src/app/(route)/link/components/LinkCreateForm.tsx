@@ -150,6 +150,7 @@ export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreat
               className='rounded object-cover'
               alt='og-image'
               fill
+              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
               priority
               quality={100}
             />

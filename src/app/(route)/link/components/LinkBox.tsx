@@ -39,10 +39,12 @@ export function LinkBox({
     >
       <div className='flex flex-col gap-2'>
         <div className='flex w-full items-center justify-between gap-2'>
-          <Link href={{
-            pathname: '/link/write',
-            query: { id }
-          }}>
+          <Link
+            href={{
+              pathname: '/link/write',
+              query: { id },
+            }}
+          >
             <h2 className='grow truncate text-title3 text-black'>{title}</h2>
           </Link>
           {isEditMode && (
@@ -63,6 +65,7 @@ export function LinkBox({
             <Image
               className='h-auto w-auto object-cover'
               fill
+              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
               src={imageSrc || DefaultOGImage}
               alt='og-image'
               priority
