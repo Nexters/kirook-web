@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Fragment, useReducer, useRef, useState } from 'react';
+import { Fragment, useEffect, useReducer, useRef, useState } from 'react';
 import { LinkList } from './components/LInkList';
 import { LinkInput } from './components/LinkInput';
 import { ALL_FILTER_ID } from './const';
@@ -14,13 +14,16 @@ import { Confirm, Icon, Loading, Portal } from '@/shared/components';
 import { TagFilter, TagFilterColors } from '@/shared/components/TagFilter';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
+import { useToast } from '@/shared/components/toast/useToast';
 import { isHTTPError } from '@/shared/utils/error';
 import { useLinkFormValueStore } from '@/stores/useLinkFormValueStore';
+import { useToastShowStore } from '@/stores/useToastShowStore';
 
 export const dynamic = 'force-dynamic';
 
 export default function LinkPage() {
   const router = useRouter();
+  const { openToast } = useToast();
   const { openModal } = useModal();
   const { isLoading, data: links } = useGetLinks();
   const [isRefetchingLinks, setIsRefetchingLinks] = useState(false);
@@ -30,6 +33,7 @@ export default function LinkPage() {
   const [selectedFilterId, setSelectedFilterId] = useState(ALL_FILTER_ID);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const { setFormValue } = useLinkFormValueStore();
+  const { isToastShow, reset: resetToastShow } = useToastShowStore();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const linkTextRef = useRef('');
 
@@ -117,6 +121,13 @@ export default function LinkPage() {
     setIsEditMode(false);
     setSelectedLinks(new Set());
   };
+
+  useEffect(() => {
+    if (isToastShow) {
+      openToast('저장되었습니다.');
+      resetToastShow();
+    }
+  }, [isToastShow, openToast, resetToastShow]);
 
   if (isLoading)
     return (

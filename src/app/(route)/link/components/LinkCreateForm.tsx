@@ -13,6 +13,7 @@ import { Alert } from '@/shared/components/Alert';
 import { Header } from '@/shared/components/layout/Header';
 import { useModal } from '@/shared/components/modal/useModal';
 import { toKRDateString } from '@/shared/utils/date';
+import { useToastShowStore } from '@/stores/useToastShowStore';
 import { v4 as uuidv4 } from 'uuid';
 
 type EditMode = 'create' | 'update';
@@ -40,6 +41,7 @@ export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreat
   const { openModal } = useModal();
   const { mutate: createLink } = useCreateLink();
   const { mutate: updateLink } = useUpdateLink();
+  const { setToastShow } = useToastShowStore();
 
   const { title, description, image, url, tags: initialTags } = initialFormValue;
   const tagList = (initialTags || []) as TagType[];
@@ -115,6 +117,7 @@ export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreat
       });
     }
 
+    setToastShow();
     router.push('/link');
   };
 
