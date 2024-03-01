@@ -2,10 +2,11 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { Database } from '@/app/api/auth/interfaces';
 import type { AuthRequestResponse } from '@/app/api/auth/route';
 import type { DatabaseResponse } from '@/app/api/db/[pageId]/route';
+import { Loading } from '@/shared/components';
 import http from '@/shared/utils/fetch';
 
 const REDIRECT_URL = 'https://kirook.vercel.app/auth';
@@ -13,63 +14,8 @@ const REDIRECT_URL = 'https://kirook.vercel.app/auth';
 export default function Auth() {
   const params = useSearchParams();
   const code = params.get('code');
-  const [token, setToken] = useState('');
-  const [pageId, setPageId] = useState('');
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const handleCodePost = async () => {
-  //     if (!code) {
-  //       alert('no code');
-  //       return;
-  //     }
-
-  //     const res = await axios.post<any, AxiosResponse<any>>('/api/auth', {
-  //       grant_type: 'authorization_code',
-  //       code: code,
-  //       redirect_uri: redirectUri,
-  //     });
-
-  //     const { accessToken, pageId } = res.data;
-
-  //     localStorage.setItem('accessToken', accessToken);
-  //     setToken(accessToken);
-  //     setPageId(pageId);
-  //   };
-
-  //   if (code) {
-  //     handleCodePost();
-  //   }
-  // }, [code]);
-
-  // useEffect(() => {
-  //   const handleDBLookup = async () => {
-  //     try {
-  //       const res = await axios.get<DatabaseResponse>(`/api/db/${pageId}`, {
-  //         headers: {
-  //           Authorization: token,
-  //         },
-  //       });
-
-  //       if (res.status !== 200) {
-  //         console.log(res.status, res.data);
-  //         throw new Error('fetch failed');
-  //       }
-
-  //       const { databases } = res.data;
-  //       setDatabase(databases);
-
-  //       router.push('/todo');
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   };
-  //   if (token && pageId) {
-  //     setTimeout(() => {
-  //       handleDBLookup();
-  //     }, 1000);
-  //   }
-  // }, [token, pageId, router]);
   const authenticate = useCallback(async () => {
     const response = await http.post<AuthRequestResponse>('/api/auth', {
       grant_type: 'authorization_code',
@@ -87,18 +33,22 @@ export default function Auth() {
       const { databases } = dbResponse;
       setDatabase(databases);
 
-      router.push('todo');
+      router.push('/todo');
     }
   }, [code, router]);
 
   useEffect(() => {
     if (!code) {
       alert('no code');
-      return;
+      router.push('/');
     }
 
-    authenticate();
-  }, [code, authenticate]);
+    try {
+      authenticate();
+    } catch (err) {
+      throw new Error('인증에 오류가 발생했습니다. 다시 시도해주세요');
+    }
+  }, [router, code, authenticate]);
 
   const setDatabase = (databases: Database[]) => {
     databases.forEach((db) => {
@@ -118,12 +68,5 @@ export default function Auth() {
     });
   };
 
-  return (
-    <section className='h-full w-full p-6'>
-      <div>auth succeed</div>
-      <button className='text-green-500' onClick={() => authenticate()}>
-        연동완료
-      </button>
-    </section>
-  );
+  return <Loading type='fetching' />;
 }

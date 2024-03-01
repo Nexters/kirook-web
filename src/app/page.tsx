@@ -1,17 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { KirookLogo, NotionLogo } from '@/assets/logo';
+import { NotionLogo } from '@/assets/logo';
 import SimpleSlider from '@/shared/components/carousel';
 
 export default function Home() {
   useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      redirect('/todo');
-    }
-
     if (process.env.NEXT_PUBLIC_ENV === 'dev' && !localStorage.getItem('accessToken')) {
       const accessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN || '';
       const todo = process.env.NEXT_PUBLIC_TODO || '';
@@ -31,8 +26,6 @@ export default function Home() {
         <SimpleSlider />
       </div>
       <div className='flex flex-col items-center justify-around'>
-        {/* <Image src={KirookLogo} alt='service logo' className='w-full' /> */}
-        {/* <img src='landing01.png' alt='intro' /> */}
         <button className='rounded-lg bg-black px-14 py-4 text-white'>
           <a href={process.env.NEXT_PUBLIC_AUTH_URL}>
             <div className='flex gap-2'>
