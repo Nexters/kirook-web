@@ -10,6 +10,7 @@ import { cn } from '@/shared/utils/cn';
 interface LinkBoxProps {
   isSelected?: boolean;
   isEditMode: boolean;
+  id: string;
   title: string;
   content: string;
   createdAt: string;
@@ -22,12 +23,12 @@ interface LinkBoxProps {
 export function LinkBox({
   isSelected = false,
   isEditMode,
+  id,
   title,
   content,
   createdAt,
   imageSrc,
   tags,
-  link,
   selectLink,
 }: LinkBoxProps) {
   return (
@@ -38,7 +39,7 @@ export function LinkBox({
     >
       <div className='flex flex-col gap-2'>
         <div className='flex w-full items-center justify-between gap-2'>
-          <Link href={link} passHref target='_blank'>
+          <Link href={`/link/${id}`}>
             <h2 className='grow truncate text-title3 text-black'>{title}</h2>
           </Link>
           {isEditMode && (

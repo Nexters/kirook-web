@@ -27,8 +27,11 @@ export async function createLink(
   return response;
 }
 
-export async function updateLink(linkId: string) {
-  const response = await http.patch(`/api/links/link/${linkId}`, {});
+export async function updateLink(
+  linkId: string,
+  payload: { text: string; title: string; url: string; image: string; tags: MultiSelect[] },
+) {
+  const response = await http.patch(`/api/links/link/${linkId}`, payload);
 
   return response;
 }
