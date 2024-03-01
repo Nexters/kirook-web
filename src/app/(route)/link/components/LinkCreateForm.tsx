@@ -51,6 +51,19 @@ export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreat
   const descriptionRef = useRef(description || '');
 
   const goBack = async () => {
+    const currentFormValue = {
+      title: titleRef.current,
+      description: descriptionRef.current,
+      image,
+      url,
+      tags: tags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color })),
+    };
+
+    if (!isUpdated(initialFormValue, currentFormValue)) {
+      router.back();
+      return;
+    }
+
     const isConfirm = await openModal<boolean>((close) => (
       <Confirm
         title='삭제하실건가요?'
@@ -243,4 +256,17 @@ function Add() {
       </g>
     </svg>
   );
+}
+
+function isUpdated(prev: FormValues, current: FormValues) {
+  return Object.keys(prev).some((key) => {
+    if (key === 'tags') {
+      const prevTags = prev['tags']?.map((tag) => tag.id).toSorted();
+      const currentTags = current['tags']?.map((tag) => tag.id).toSorted();
+      console.log(prevTags, currentTags);
+      return JSON.stringify(prevTags) !== JSON.stringify(currentTags);
+    }
+
+    return prev[key as keyof FormValues] !== current[key as keyof FormValues];
+  });
 }
