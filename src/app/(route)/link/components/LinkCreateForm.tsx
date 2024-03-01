@@ -97,7 +97,6 @@ export function LinkCreateForm({ editMode, linkId, initialFormValue }: LinkCreat
         return;
       }
 
-      console.log('test');
       updateLink({
         linkId,
         text: descriptionRef.current,

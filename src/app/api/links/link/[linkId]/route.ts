@@ -98,7 +98,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { linkId
             type: 'text',
             text: {
               content: body.image,
-              link: body.image,
+              link:
+                body.image.length > 0
+                  ? {
+                      url: body.image,
+                    }
+                  : null,
             },
             annotations: {
               bold: false,
@@ -115,7 +120,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { linkId
       },
       tags: {
         type: 'multi_select',
-        multi_select: body.tgas,
+        multi_select: body.tags.map((tag: { name: string; color: string }) => ({ name: tag.name, color: tag.color })),
       },
       title: {
         id: 'title',
@@ -150,6 +155,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { linkId
         'Notion-Version': '2022-06-28',
       },
     });
+
     if (res.status === 200) {
       const { properties, id } = res.data;
       const { tags, text, title, image, link: url } = properties;
