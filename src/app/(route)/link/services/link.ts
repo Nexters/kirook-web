@@ -21,6 +21,12 @@ export async function createLink(
   return response;
 }
 
+export async function updateLink(linkId: string) {
+  const response = await http.patch(`/api/links/link/${linkId}`, {});
+
+  return response;
+}
+
 export async function deleteLink(linkId: string) {
   const response = await http.delete(`/api/links/link/${linkId}`, {});
 
