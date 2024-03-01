@@ -3,8 +3,8 @@ import { type NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken');
 
-  if (!accessToken) {
-    return NextResponse.redirect('/');
+  if (!accessToken && request.nextUrl.pathname !== '/') {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   if (accessToken && request.nextUrl.pathname === '/') {
@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
   }
 
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('Authorization', `Bearer ${accessToken.value}`);
+  requestHeaders.set('Authorization', `Bearer ${accessToken?.value}`);
   requestHeaders.set('Notion-Version', '2022-06-28');
 
   const response = NextResponse.next({
