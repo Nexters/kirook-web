@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: { params: { memoId: 
   const slug = params.memoId;
   const url = `https://api.notion.com/v1/pages/${slug}`;
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   try {
     const resp = await axios.get<NotionMemo>(url, {
       headers: {
@@ -33,11 +33,11 @@ export async function GET(request: NextRequest, { params }: { params: { memoId: 
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: { memoId: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: { memoId: string } }) {
   const slug = params.memoId;
   const body = await request.json();
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   const url = `https://api.notion.com/v1/pages/${slug}`;
 
   const data = {
@@ -129,7 +129,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { memoI
   const slug = params.memoId;
   const url = `https://api.notion.com/v1/pages/${slug}`;
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   try {
     const resp = await axios.patch<NotionMemo>(
       url,

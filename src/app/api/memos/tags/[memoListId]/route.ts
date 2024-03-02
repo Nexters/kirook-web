@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: { params: { memoList
   const slug = params.memoListId;
   const url = `https://api.notion.com/v1/databases/${slug}`;
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   try {
     const resp = await axios.get<NotionTag>(url, {
       headers: {
