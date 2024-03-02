@@ -29,10 +29,9 @@ export default function MemoWritePage() {
   };
 
   const handleUpdate = async (memo: Memo) => {
-    const accessToken = localStorage.getItem('accessToken') as string;
     const [title, ...values] = value.split('\n');
     const text = values.join('\n');
-    const res = await updateMemo(accessToken, {
+    const res = await updateMemo({
       id: params.memoId as string,
       title,
       text,
@@ -44,11 +43,7 @@ export default function MemoWritePage() {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-
-    if (accessToken) {
-      fetchMemo({ accessToken, memoId: params.memoId as string });
-    }
+    fetchMemo({ memoId: params.memoId as string });
   }, [fetchMemo, params.memoId]);
 
   useEffect(() => {

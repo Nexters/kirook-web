@@ -7,9 +7,9 @@ interface Memos {
   memo: Memo;
   tags: MultiSelectOption[];
   isLoading: boolean;
-  fetchMemoes: (accessToken: string, memoListId: string) => void;
-  fetchMemo: ({ accessToken, memoId }: { accessToken: string; memoId: string }) => void;
-  fetchTags: (accessToken: string, memoListId: string) => void;
+  fetchMemoes: (memoListId: string) => void;
+  fetchMemo: ({ memoId }: { memoId: string }) => void;
+  fetchTags: (memoListId: string) => void;
 }
 
 const useStore = create<Memos>((set) => ({
@@ -18,23 +18,23 @@ const useStore = create<Memos>((set) => ({
   tags: [],
   isLoading: false,
 
-  fetchMemoes: async (accessToken: string, memoListId: string) => {
+  fetchMemoes: async (memoListId: string) => {
     set({ isLoading: true });
-    const response = await fetchMemoes(accessToken, memoListId);
+    const response = await fetchMemoes(memoListId);
     set({ memos: response });
     set({ isLoading: false });
   },
 
-  fetchMemo: async ({ accessToken, memoId }: { accessToken: string; memoId: string }) => {
+  fetchMemo: async ({ memoId }: { memoId: string }) => {
     set({ isLoading: true });
-    const response = await getMemoItem(accessToken, memoId);
+    const response = await getMemoItem(memoId);
     set({ memo: response });
     set({ isLoading: false });
   },
 
-  fetchTags: async (accessToken, memoListId) => {
+  fetchTags: async (memoListId) => {
     set({ isLoading: true });
-    const response = await getTags(accessToken, memoListId);
+    const response = await getTags(memoListId);
     set({ tags: response });
     set({ isLoading: false });
   },
