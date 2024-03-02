@@ -10,3 +10,4 @@ export * from './Loading';
 export * from './TagFilter';
 export * from './Tag';
 export * from './Confirm';
+export * from './Spinner';
