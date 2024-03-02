@@ -36,12 +36,11 @@ export default function Auth() {
 
       router.push('/todo');
     }
-  }, [router]);
+  }, [code, router]);
 
   useEffect(() => {
     if (!code) {
-      alert('no code');
-      router.push('/');
+      return;
     }
 
     authenticate();
