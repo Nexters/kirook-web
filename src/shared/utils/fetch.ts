@@ -17,7 +17,6 @@ async function request<Response>(url: FetchUrl, { headers, ...rest }: RequestIni
   });
 
   if (response.status >= 400) {
-    console.log(response);
     throw new HTTPError(response.status, `status code: ${response.status} error가 발생했습니다`);
   }
 
