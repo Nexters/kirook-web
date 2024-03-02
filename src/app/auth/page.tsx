@@ -24,6 +24,7 @@ export default function Auth() {
     });
 
     const { accessToken, pageId } = response;
+
     if (accessToken) {
       const dbResponse = await http.get<DatabaseResponse>(`/api/db/${pageId}`, {
         headers: {
@@ -35,7 +36,7 @@ export default function Auth() {
 
       router.push('/todo');
     }
-  }, [code, router]);
+  }, [router]);
 
   useEffect(() => {
     if (!code) {
@@ -43,11 +44,7 @@ export default function Auth() {
       router.push('/');
     }
 
-    try {
-      authenticate();
-    } catch (err) {
-      throw new Error('인증에 오류가 발생했습니다. 다시 시도해주세요');
-    }
+    authenticate();
   }, [router, code, authenticate]);
 
   const setDatabase = (databases: Database[]) => {

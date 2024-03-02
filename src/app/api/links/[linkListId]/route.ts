@@ -50,8 +50,6 @@ export async function POST(request: NextRequest, { params }: { params: { linkLis
   const accessToken = request.cookies.get('accessToken')?.value;
   const url = 'https://api.notion.com/v1/pages';
 
-  console.log(body.tags);
-
   const data = {
     parent: {
       database_id: slug,
