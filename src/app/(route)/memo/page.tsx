@@ -8,6 +8,7 @@ import useStore from './hooks/useStore';
 import { useRouter } from 'next/navigation';
 import { MemoAddButton } from './components/MemoAddButton';
 import { Header } from '@/shared/components/layout/Header';
+import { Spinner } from '@/shared/components';
 
 export default function Memo() {
   const router = useRouter();
@@ -68,8 +69,9 @@ export default function Memo() {
          
         {/* Memo List 영역 */}
         { isLoading ? 
-          // NOTE: 로딩뷰 필요
-          ( <div>Loading...</div>) : (<>
+          ( <div className='flex h-full w-full justify-center items-center'>
+            <Spinner/>
+          </div>) : (<>
             {
               selectedMemoes.length > 0 ? (
                 <div className='mb-[94px] h-[calc(100vh-13rem)] grow px-[15px] py-3'>
