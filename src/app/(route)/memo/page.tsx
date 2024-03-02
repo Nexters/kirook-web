@@ -28,10 +28,9 @@ export default function Memo() {
 
   useEffect(() => {
     const memoListId = localStorage.getItem('memo');
-    const accessToken = localStorage.getItem('accessToken');
-    if (memoListId !== null && accessToken !== null) {
-      fetchMemoes(accessToken, memoListId);
-      fetchTags(accessToken, memoListId)
+    if (memoListId !== null) {
+      fetchMemoes(memoListId);
+      fetchTags(memoListId)
     }
   }, [fetchMemoes, fetchTags]);
 

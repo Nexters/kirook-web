@@ -40,7 +40,7 @@ export default function MemoWritePage() {
     const [title, ...values] = value.split('\n');
     const text = values.join('\n');
 
-    const res = await createMemo(token, memoListId, {
+    const res = await createMemo(memoListId, {
       tags,
       title,
       text,
