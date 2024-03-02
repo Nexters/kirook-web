@@ -15,8 +15,6 @@ export default function MemoWritePage() {
   const [value, setValue] = useState<string>('');
   const [tagValue, setTagValue] = useState<string>('');
   const [tags, setTags] = useState<MultiSelectOption[]>([]);
-  const [token, setToken] = useState('');
-  const [memoListId, setId] = useState('');
 
   const handleChange = (
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -40,7 +38,12 @@ export default function MemoWritePage() {
     const [title, ...values] = value.split('\n');
     const text = values.join('\n');
 
-    const res = await createMemo(memoListId, {
+    const memolistId = localStorage.getItem('memo');
+    if (!memolistId) {
+      return;
+    }
+
+    const res = await createMemo(memolistId, {
       tags,
       title,
       text,
@@ -49,16 +52,6 @@ export default function MemoWritePage() {
 
     router.push('/memo');
   };
-
-  useEffect(() => {
-    const t = localStorage.getItem('accessToken');
-    const m = localStorage.getItem('memo');
-
-    if (t && m) {
-      setToken(t);
-      setId(m);
-    }
-  }, []);
 
   return (
     <>
