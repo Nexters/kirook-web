@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Todo, TodoResponse } from '../../todos/[slug]/route';
-import { NotionTodoAllResponse } from '../../todos/interfaces';
 import { Memo, MemoResponse, NotionMemo, NotionMemoResponse } from './interface';
 import axios, { AxiosError } from 'axios';
 
 // Get Todos
 export async function GET(request: NextRequest, { params }: { params: { memoListId: string } }) {
   const slug = params.memoListId;
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   const url = `https://api.notion.com/v1/databases/${slug}/query`;
   const req = {};
   try {
@@ -39,11 +37,11 @@ export async function GET(request: NextRequest, { params }: { params: { memoList
 }
 
 // Create Todo
-export async function POST(request: Request, { params }: { params: { memoListId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: { memoListId: string } }) {
   const slug = params.memoListId;
   const body = await request.json();
 
-  const accessToken = request.headers.get('Authorization');
+  const accessToken = request.cookies.get('accessToken')?.value;
   const url = 'https://api.notion.com/v1/pages';
 
   const data = {
